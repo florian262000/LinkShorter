@@ -3,9 +3,11 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Npgsql" Version="5.0.5" />
     </ItemGroup>
 
