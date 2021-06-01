@@ -8,8 +8,8 @@ using Microsoft.Extensions.Logging;
 namespace LinkShorter.Controllers
 {
     [ApiController]
-    [Route("wetter")]
-    public class WeatherForecastController : ControllerBase
+    [Route("api/link")]
+    public class LinkApiController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
@@ -18,22 +18,16 @@ namespace LinkShorter.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public LinkApiController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast>  cvcxvbvcfxv()
+        [Route("add")]
+        public string cvcxvbvcfxv()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-                {
-                    Date = DateTime.Now.AddDays(index),
-                    TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
-                })
-                .ToArray();
+            return "sdfsdf";
         }
     }
 }
