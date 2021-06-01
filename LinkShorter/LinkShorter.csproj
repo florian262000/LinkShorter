@@ -5,5 +5,9 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Npgsql" Version="5.0.5" />
+    </ItemGroup>
+
 
 </Project>
