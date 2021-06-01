@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace LinkShorter.Controllers
 {
@@ -11,12 +12,19 @@ namespace LinkShorter.Controllers
     [Route("api/link")]
     public class LinkApiController : ControllerBase
     {
+        private readonly JObject _config;
 
-        [HttpGet]
-        [Route("add")]
-        public string cvcxvbvcfxv()
+        public LinkApiController(JObject config)
         {
-            return "sdfsdf";
+            this._config = config;
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public LinkAddApiPost Add([FromBody] LinkAddApiPost linkAddApiPost)
+        {
+            Console.WriteLine(linkAddApiPost.ToString());
+            return linkAddApiPost;
         }
     }
 }

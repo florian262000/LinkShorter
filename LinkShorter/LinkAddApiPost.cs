@@ -2,10 +2,10 @@
 {
     public class LinkAddApiPost
     {
-        public string targetUrl;
-        public string shortLink;
+        public string targetUrl { get; set; }
+        public string shortLink { get; set; }
 
-        public string accessToken;
+        //public string accessToken { get; set; }
 
         public override string ToString()
         {
