@@ -20,21 +20,27 @@ namespace LinkShorter
             connection.Open();
             // check (and create tables)
 
+            var queryAddExtension = "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";";
+
+            var cmd0 = new NpgsqlCommand(queryAddExtension, connection);
+            cmd0.ExecuteScalar();
+
             var queryCheckUserTable = @"CREATE TABLE IF NOT EXISTS users (
                            id UUID  PRIMARY KEY,
                            username text,
-                           email text
+                           email text,
+                           apikey text
                         );";
             var cmd = new NpgsqlCommand(queryCheckUserTable, connection);
             cmd.ExecuteScalar();
 
 
             var queryCheckLinkTable = @"CREATE TABLE IF NOT EXISTS links (
-                           id UUID  PRIMARY KEY,
+                           id UUID  PRIMARY KEY DEFAULT uuid_generate_v4(),
                            targetUrl text,
                            shortPath text,
                            clickCounter int,
-                           createdAt timestamp,
+                           createdAt timestamp  NOT NULL DEFAULT NOW(),
                            creatorUuid UUID,
                            FOREIGN KEY(creatorUuid) REFERENCES users(id)
                 );

@@ -22,19 +22,30 @@ namespace LinkShorter.Controllers
 
         [HttpPost]
         [Route("add")]
-        public LinkAddApiPost Add([FromBody] LinkAddApiPost linkAddApiPost)
+        public IActionResult Add([FromBody] LinkAddApiPost linkAddApiPost)
         {
-         
-            var sql = "SELECT version()";
+            Request.Headers.TryGetValue("x-api-key", out var apikey);
+            
+            var queryUserId = @$"SELECT id FROM users WHERE apikey = '{apikey}';";
+            var cmdUserId = new NpgsqlCommand(queryUserId, databaseWrapper.GetDatabaseConnection());
+
+            var userId = cmdUserId.ExecuteScalar()?.ToString();
+
+            if (userId == null) return Unauthorized();
+
+            
+            Console.WriteLine(linkAddApiPost.targetUrl);
+            var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, creatoruuid)
+            VALUES ('{linkAddApiPost.targetUrl}', '{linkAddApiPost.shortPath}', 0, '{userId}';";
 
             using var cmd = new NpgsqlCommand(sql, databaseWrapper.GetDatabaseConnection());
 
             var version = cmd.ExecuteScalar().ToString();
-            
+
             Console.WriteLine($"PostgreSQL version: {version}");
             Console.WriteLine();
             Console.WriteLine(linkAddApiPost.ToString());
-            return linkAddApiPost;
+            return Ok();
         }
     }
 }
