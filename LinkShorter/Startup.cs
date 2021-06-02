@@ -32,8 +32,6 @@ namespace LinkShorter
             services.AddControllers();
 
             var config = JObject.Parse(File.ReadAllText("config.json"));
-            Console.WriteLine(config);
-            // lebt
             services.AddSingleton(new DatabaseWrapper(config));
         }
 
