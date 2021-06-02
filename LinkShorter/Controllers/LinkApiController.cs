@@ -13,25 +13,24 @@ namespace LinkShorter.Controllers
     [Route("api/link")]
     public class LinkApiController : ControllerBase
     {
-        private readonly JObject _config;
-        private readonly NpgsqlConnection _npgsqlConnection;
+        private readonly DatabaseWrapper databaseWrapper;
 
-        public LinkApiController(JObject config, NpgsqlConnection sqlConnection)
+        public LinkApiController(DatabaseWrapper databaseWrapper)
         {
-            this._config = config;
-            this._npgsqlConnection = sqlConnection;
+            this.databaseWrapper = databaseWrapper;
         }
 
         [HttpPost]
         [Route("add")]
         public LinkAddApiPost Add([FromBody] LinkAddApiPost linkAddApiPost)
         {
-            _npgsqlConnection.Open();
+         
             var sql = "SELECT version()";
 
-            using var cmd = new NpgsqlCommand(sql, _npgsqlConnection);
+            using var cmd = new NpgsqlCommand(sql, databaseWrapper.GetDatabaseConnection());
 
             var version = cmd.ExecuteScalar().ToString();
+            
             Console.WriteLine($"PostgreSQL version: {version}");
             Console.WriteLine();
             Console.WriteLine(linkAddApiPost.ToString());

@@ -31,14 +31,8 @@ namespace LinkShorter
         {
             services.AddControllers();
             var config = JObject.Parse(File.ReadAllText("config.json"));
-            services.AddSingleton(config);
-            var cs =
-                $"Host={config["database"]["host"]};Username={config["database"]["username"]};Password={config["database"]["password"]};Database={config["database"]["name"]}";
 
-            using var con = new NpgsqlConnection(cs);
-            con.Open();
-
-            services.AddSingleton(con);
+            services.AddSingleton(new DatabaseWrapper(config));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
