@@ -30,8 +30,8 @@ namespace LinkShorter
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
             var config = JObject.Parse(File.ReadAllText("config.json"));
-
             services.AddSingleton(new DatabaseWrapper(config));
         }
 
