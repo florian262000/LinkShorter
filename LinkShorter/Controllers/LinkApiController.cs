@@ -39,7 +39,6 @@ namespace LinkShorter.Controllers
             VALUES (DEFAULT,'{linkAddApiPost.targetUrl}', '{linkAddApiPost.shortPath}', 0, DEFAULT, '{userId}');";
 
             using var cmd = new NpgsqlCommand(sql, databaseWrapper.GetDatabaseConnection());
-
             cmd.ExecuteScalar();
 
             return Ok();
