@@ -25,7 +25,7 @@ namespace LinkShorter.Controllers
         public IActionResult Add([FromBody] LinkAddApiPost linkAddApiPost)
         {
             Request.Headers.TryGetValue("x-api-key", out var apikey);
-            
+
             var queryUserId = @$"SELECT id FROM users WHERE apikey = '{apikey}';";
             var cmdUserId = new NpgsqlCommand(queryUserId, databaseWrapper.GetDatabaseConnection());
 
@@ -33,18 +33,15 @@ namespace LinkShorter.Controllers
 
             if (userId == null) return Unauthorized();
 
-            
+
             Console.WriteLine(linkAddApiPost.targetUrl);
-            var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, creatoruuid)
-            VALUES ('{linkAddApiPost.targetUrl}', '{linkAddApiPost.shortPath}', 0, '{userId}';";
+            var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
+            VALUES (DEFAULT,'{linkAddApiPost.targetUrl}', '{linkAddApiPost.shortPath}', 0, DEFAULT, '{userId}');";
 
             using var cmd = new NpgsqlCommand(sql, databaseWrapper.GetDatabaseConnection());
 
-            var version = cmd.ExecuteScalar().ToString();
+            cmd.ExecuteScalar();
 
-            Console.WriteLine($"PostgreSQL version: {version}");
-            Console.WriteLine();
-            Console.WriteLine(linkAddApiPost.ToString());
             return Ok();
         }
     }
