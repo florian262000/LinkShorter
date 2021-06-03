@@ -26,7 +26,7 @@ namespace LinkShorter
             cmd0.ExecuteScalar();
 
             var queryCheckUserTable = @"CREATE TABLE IF NOT EXISTS users (
-                           id UUID  PRIMARY KEY,
+                           id UUID  PRIMARY KEY UNIQUE,
                            username text,
                            email text,
                            apikey text
@@ -36,9 +36,9 @@ namespace LinkShorter
 
 
             var queryCheckLinkTable = @"CREATE TABLE IF NOT EXISTS links (
-                           id UUID  PRIMARY KEY DEFAULT uuid_generate_v4(),
+                           id UUID  PRIMARY KEY DEFAULT uuid_generate_v4() UNIQUE,
                            targetUrl text,
-                           shortPath text,
+                           shortPath text UNIQUE,
                            clickCounter int,
                            createdAt timestamp  NOT NULL DEFAULT NOW(),
                            creatorUuid UUID,
