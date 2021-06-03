@@ -32,6 +32,7 @@ namespace LinkShorter
             services.AddControllers();
 
             var config = JObject.Parse(File.ReadAllText("config.json"));
+            services.AddSingleton(new ConfigWrapper(config));
             services.AddSingleton(new DatabaseWrapper(config));
         }
 

@@ -1,15 +1,25 @@
-﻿namespace LinkShorter
+﻿using System;
+using System.Linq;
+
+namespace LinkShorter
 {
     public class LinkAddApiPost
     {
-        public string targetUrl { get; set; }
-        public string shortPath { get; set; }
+        private string _shortPath;
+        public string TargetUrl { get; set; }
+
+        public string ShortPath
+        {
+            get => _shortPath;
+            set => _shortPath ??= value;
+        }
 
         //public string accessToken { get; set; }
 
         public override string ToString()
         {
-            return targetUrl;
+            return TargetUrl;
         }
+        
     }
 }

@@ -14,10 +14,12 @@ namespace LinkShorter.Controllers
     public class LinkApiController : ControllerBase
     {
         private readonly DatabaseWrapper _databaseWrapper;
+        private ConfigWrapper _config;
 
-        public LinkApiController(DatabaseWrapper databaseWrapper)
+        public LinkApiController(DatabaseWrapper databaseWrapper, ConfigWrapper config)
         {
             this._databaseWrapper = databaseWrapper;
+            this._config = config;
         }
 
         [HttpPost]
@@ -31,19 +33,21 @@ namespace LinkShorter.Controllers
 
             var userId = cmdUserId.ExecuteScalar()?.ToString();
 
-            if (userId == null) return Unauthorized("x-api-key ist invalid");
-            if (linkAddApiPost.shortPath.StartsWith("api")) return Conflict("shortPath does not start with 'api'");
-            if (!(linkAddApiPost.targetUrl.StartsWith("http://") || linkAddApiPost.targetUrl.StartsWith("https://")))
+            if (userId == null) return Unauthorized("x-api-key is invalid");
+            if (linkAddApiPost.ShortPath != null && linkAddApiPost.ShortPath.StartsWith("api"))
+                return Conflict("shortPath does not start with 'api'");
+            if (!(linkAddApiPost.TargetUrl.StartsWith("http://") || linkAddApiPost.TargetUrl.StartsWith("https://")))
                 return BadRequest("The target url must start with http:// or https://");
 
             Console.WriteLine(linkAddApiPost.targetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
-            VALUES (DEFAULT,'{linkAddApiPost.targetUrl}', '{linkAddApiPost.shortPath}', 0, DEFAULT, '{userId}');";
+            VALUES (DEFAULT,'{linkAddApiPost.TargetUrl}', '{linkAddApiPost.ShortPath}', 0, DEFAULT, '{userId}');";
 
             using var cmd = new NpgsqlCommand(sql, _databaseWrapper.GetDatabaseConnection());
             cmd.ExecuteScalar();
 
-            return Ok();
+            var shortUrl = "" + _config.Get()["urlbase"] + "/" + linkAddApiPost.ShortPath;
+            return Ok(shortUrl);
         }
     }
 }
