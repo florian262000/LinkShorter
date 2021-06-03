@@ -29,7 +29,7 @@ namespace LinkShorter
                            id UUID  PRIMARY KEY UNIQUE,
                            username text,
                            email text,
-                           apikey text
+                           apikey text UNIQUE
                         );";
             var cmd = new NpgsqlCommand(queryCheckUserTable, connection);
             cmd.ExecuteScalar();
