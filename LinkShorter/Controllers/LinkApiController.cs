@@ -48,8 +48,10 @@ namespace LinkShorter.Controllers
 
 
             //todo check for duplacates
-            linkAddApiPost.ShortPath = _stringGenerator.GenerateRandomPath();
-
+            linkAddApiPost.ShortPath = GenerateUniqueShortPath();
+            
+            
+            
             Console.WriteLine(linkAddApiPost.TargetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
             VALUES (DEFAULT,'{linkAddApiPost.TargetUrl}', '{linkAddApiPost.ShortPath.ToLower()}', 0, DEFAULT, '{userId}');";
@@ -60,5 +62,21 @@ namespace LinkShorter.Controllers
             var shortUrl = "" + _config.Get()["urlbase"] + "/" + linkAddApiPost.ShortPath;
             return Ok(shortUrl);
         }
+
+        private string GenerateUniqueShortPath()
+        {
+            while (true)
+            {
+                var shortPath = _stringGenerator.GenerateRandomPath();
+                var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = '{shortPath}';";
+                var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
+
+                var duplicates = cmdCheckDuplicates.ExecuteScalar();
+
+                if (duplicates != null) continue;
+                return shortPath;
+            }
+        }
     }
+    
 }
