@@ -15,21 +15,21 @@ namespace LinkShorter.Controllers
         }
 
         [HttpGet]
-        public string Get(string shortPath)
+        public ActionResult Get(string shortPath)
         {
             var queryTargetUrl =
                 @$"SELECT targeturl FROM links WHERE shortPath = '{shortPath}'; UPDATE links set clickcounter = clickcounter+1  WHERE shortPath = '{shortPath}'; ";
             var cmdUserId = new NpgsqlCommand(queryTargetUrl, _databaseWrapper.GetDatabaseConnection());
 
-            var targetPath = cmdUserId.ExecuteScalar()?.ToString();
+            var targeturl = cmdUserId.ExecuteScalar()?.ToString();
 
-            if (targetPath == null)
+            if (targeturl == null)
             {
-                return "404";
+                return new NotFoundResult();
             }
 
 
-            return targetPath;
+            return new RedirectResult(targeturl);
         }
     }
 }
