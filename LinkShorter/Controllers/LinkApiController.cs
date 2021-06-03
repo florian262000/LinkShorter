@@ -13,11 +13,11 @@ namespace LinkShorter.Controllers
     [Route("api/link")]
     public class LinkApiController : ControllerBase
     {
-        private readonly DatabaseWrapper databaseWrapper;
+        private readonly DatabaseWrapper _databaseWrapper;
 
         public LinkApiController(DatabaseWrapper databaseWrapper)
         {
-            this.databaseWrapper = databaseWrapper;
+            this._databaseWrapper = databaseWrapper;
         }
 
         [HttpPost]
@@ -27,7 +27,7 @@ namespace LinkShorter.Controllers
             Request.Headers.TryGetValue("x-api-key", out var apikey);
 
             var queryUserId = @$"SELECT id FROM users WHERE apikey = '{apikey}';";
-            var cmdUserId = new NpgsqlCommand(queryUserId, databaseWrapper.GetDatabaseConnection());
+            var cmdUserId = new NpgsqlCommand(queryUserId, _databaseWrapper.GetDatabaseConnection());
 
             var userId = cmdUserId.ExecuteScalar()?.ToString();
 
@@ -38,7 +38,7 @@ namespace LinkShorter.Controllers
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
             VALUES (DEFAULT,'{linkAddApiPost.targetUrl}', '{linkAddApiPost.shortPath}', 0, DEFAULT, '{userId}');";
 
-            using var cmd = new NpgsqlCommand(sql, databaseWrapper.GetDatabaseConnection());
+            using var cmd = new NpgsqlCommand(sql, _databaseWrapper.GetDatabaseConnection());
             cmd.ExecuteScalar();
 
             return Ok();
