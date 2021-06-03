@@ -48,7 +48,18 @@ namespace LinkShorter.Controllers
 
 
             //todo check for duplacates
-            linkAddApiPost.ShortPath = GenerateUniqueShortPath();
+            if (linkAddApiPost.ShortPath == null)
+            {
+                linkAddApiPost.ShortPath = GenerateUniqueShortPath();    
+            }
+            else
+            {
+                if (CheckIfDuplicateExists(linkAddApiPost.ShortPath))
+                {
+                    return Conflict("shortpath already in use");
+                }
+            }
+            
             
             
             
@@ -68,14 +79,21 @@ namespace LinkShorter.Controllers
             while (true)
             {
                 var shortPath = _stringGenerator.GenerateRandomPath();
-                var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = '{shortPath}';";
-                var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
-
-                var duplicates = cmdCheckDuplicates.ExecuteScalar();
-
-                if (duplicates != null) continue;
+                var duplicates = CheckIfDuplicateExists(shortPath);
+                
+                if (duplicates) continue;
                 return shortPath;
             }
+        }
+
+        private bool CheckIfDuplicateExists(string shortPath)
+        {
+            var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = '{shortPath}' LIMIT 1;";
+            var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
+
+            var duplicates = cmdCheckDuplicates.ExecuteScalar();
+
+            return duplicates != null;
         }
     }
     

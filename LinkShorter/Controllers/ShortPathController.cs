@@ -22,15 +22,15 @@ namespace LinkShorter.Controllers
                 @$"SELECT targeturl FROM links WHERE shortPath = '{shortPath}'; UPDATE links set clickcounter = clickcounter+1  WHERE shortPath = '{shortPath}'; ";
             var cmdUserId = new NpgsqlCommand(queryTargetUrl, _databaseWrapper.GetDatabaseConnection());
 
-            var targeturl = cmdUserId.ExecuteScalar()?.ToString();
+            var targetUrl = cmdUserId.ExecuteScalar()?.ToString();
 
-            if (targeturl == null)
+            if (targetUrl == null)
             {
                 return new NotFoundResult();
             }
 
 
-            return new RedirectResult(targeturl);
+            return new RedirectResult(targetUrl);
         }
     }
 }
