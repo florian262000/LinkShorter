@@ -31,8 +31,8 @@ namespace LinkShorter.Controllers
 
             var userId = cmdUserId.ExecuteScalar()?.ToString();
 
-            if (userId == null) return Unauthorized();
-
+            if (userId == null) return Unauthorized("x-api-key ist invalid");
+            if (linkAddApiPost.shortPath.StartsWith("api")) return Conflict("shortPath does not start with 'api'");
 
             Console.WriteLine(linkAddApiPost.targetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
