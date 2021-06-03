@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace LinkShorter.Controllers
 {
@@ -6,10 +7,28 @@ namespace LinkShorter.Controllers
     [Route("/{shortPath}")]
     public class ShortPathController
     {
+        private readonly DatabaseWrapper _databaseWrapper;
+
+        public ShortPathController(DatabaseWrapper databaseWrapper)
+        {
+            this._databaseWrapper = databaseWrapper;
+        }
+
         [HttpGet]
         public string Get(string shortPath)
         {
-            return shortPath;
+            var queryTargetUrl = @$"SELECT targeturl FROM links WHERE shortPath = '{shortPath}';";
+            var cmdUserId = new NpgsqlCommand(queryTargetUrl, _databaseWrapper.GetDatabaseConnection());
+
+            var targetPath = cmdUserId.ExecuteScalar()?.ToString();
+
+            if (targetPath == null)
+            {
+                return "404";
+            }
+
+
+            return targetPath;
         }
     }
 }
