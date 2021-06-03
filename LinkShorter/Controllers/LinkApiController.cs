@@ -52,7 +52,7 @@ namespace LinkShorter.Controllers
 
             Console.WriteLine(linkAddApiPost.TargetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
-            VALUES (DEFAULT,'{linkAddApiPost.TargetUrl}', '{linkAddApiPost.ShortPath}', 0, DEFAULT, '{userId}');";
+            VALUES (DEFAULT,'{linkAddApiPost.TargetUrl}', '{linkAddApiPost.ShortPath.ToLower()}', 0, DEFAULT, '{userId}');";
 
             using var cmd = new NpgsqlCommand(sql, _databaseWrapper.GetDatabaseConnection());
             cmd.ExecuteScalar();

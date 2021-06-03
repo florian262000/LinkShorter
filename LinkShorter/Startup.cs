@@ -35,6 +35,7 @@ namespace LinkShorter
             services.AddSingleton(new ConfigWrapper(config));
             services.AddSingleton(new DatabaseWrapper(config));
             services.AddSingleton(new StringGenerator());
+            services.AddRouting(options => options.LowercaseUrls = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
