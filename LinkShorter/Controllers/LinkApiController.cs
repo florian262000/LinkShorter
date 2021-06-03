@@ -33,6 +33,8 @@ namespace LinkShorter.Controllers
 
             if (userId == null) return Unauthorized("x-api-key ist invalid");
             if (linkAddApiPost.shortPath.StartsWith("api")) return Conflict("shortPath does not start with 'api'");
+            if (!(linkAddApiPost.targetUrl.StartsWith("http://") || linkAddApiPost.targetUrl.StartsWith("https://")))
+                return BadRequest("The target url must start with http:// or https://");
 
             Console.WriteLine(linkAddApiPost.targetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
