@@ -14,12 +14,14 @@ namespace LinkShorter.Controllers
     public class LinkApiController : ControllerBase
     {
         private readonly DatabaseWrapper _databaseWrapper;
-        private ConfigWrapper _config;
+        private readonly ConfigWrapper _config;
+        private readonly StringGenerator _stringGenerator;
 
-        public LinkApiController(DatabaseWrapper databaseWrapper, ConfigWrapper config)
+        public LinkApiController(DatabaseWrapper databaseWrapper, ConfigWrapper config, StringGenerator stringGenerator)
         {
             this._databaseWrapper = databaseWrapper;
             this._config = config;
+            this._stringGenerator = stringGenerator;
         }
 
         [HttpPost]
@@ -34,12 +36,21 @@ namespace LinkShorter.Controllers
             var userId = cmdUserId.ExecuteScalar()?.ToString();
 
             if (userId == null) return Unauthorized("x-api-key is invalid");
+            // auth DONE
+
             if (linkAddApiPost.ShortPath != null && linkAddApiPost.ShortPath.StartsWith("api"))
                 return Conflict("shortPath does not start with 'api'");
             if (!(linkAddApiPost.TargetUrl.StartsWith("http://") || linkAddApiPost.TargetUrl.StartsWith("https://")))
                 return BadRequest("The target url must start with http:// or https://");
 
-            Console.WriteLine(linkAddApiPost.targetUrl);
+
+            // generate shortPath and set
+
+
+            //todo check for duplacates
+            linkAddApiPost.ShortPath = _stringGenerator.GenerateRandomPath();
+
+            Console.WriteLine(linkAddApiPost.TargetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
             VALUES (DEFAULT,'{linkAddApiPost.TargetUrl}', '{linkAddApiPost.ShortPath}', 0, DEFAULT, '{userId}');";
 
