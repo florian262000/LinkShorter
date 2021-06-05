@@ -19,6 +19,11 @@ namespace LinkShorter
             return sessionId;
         }
 
+        public string GetUserFromSessionId(string sessionId)
+        {
+            return !map.TryGetValue(sessionId, out var userid) ? null : userid;
+        }
+
 
         private string GenerateSessionId()
         {
