@@ -39,8 +39,7 @@ namespace LinkShorter
             var stringGenerator = new StringGenerator();
             services.AddSingleton(stringGenerator);
             services.AddSingleton(pwd => new PasswordManager(stringGenerator, configWrapper));
-
-
+            services.AddSingleton(SessionManager => new SessionManager(stringGenerator));
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddCors(options =>
             {

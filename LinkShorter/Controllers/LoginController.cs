@@ -14,13 +14,15 @@ namespace LinkShorter.Controllers
         private DatabaseWrapper _databaseWrapper;
         private PasswordManager _passwordManager;
         private readonly StringGenerator _stringGenerator;
+        private readonly SessionManager _sessionManager;
 
         public LoginController(DatabaseWrapper databaseWrapper, PasswordManager passwordManager,
-            StringGenerator stringGenerator)
+            StringGenerator stringGenerator, SessionManager sessionManager)
         {
             this._databaseWrapper = databaseWrapper;
             this._passwordManager = passwordManager;
             this._stringGenerator = stringGenerator;
+            this._sessionManager = sessionManager;
         }
 
 
@@ -53,14 +55,17 @@ namespace LinkShorter.Controllers
 
 
             var insert =
-                @$"INSERT INTO users(id, username, password, salt, apikey) VALUES (DEFAULT,'{loginData.Username}', '{hash}', '{salt}', '{apikey}');";
+                @$"INSERT INTO users(id, username, password, salt, apikey) VALUES (DEFAULT,'{loginData.Username}', '{hash}', '{salt}', '{apikey}');
+SELECT id FROM users WHERE username = '{loginData.Username}';";
             var insertion = new NpgsqlCommand(insert, _databaseWrapper.GetDatabaseConnection());
-            insertion.ExecuteScalar();
+            var result = insertion.ExecuteScalar();
 
 
             var resp = new HttpResponseMessage();
 
-            Response.Cookies.Append("test", "dfsdfsdf");
+            Console.WriteLine("userid: " + result.ToString());
+
+            Response.Cookies.Append("session", _sessionManager.Register(result.ToString()));
             return "ok";
         }
 
