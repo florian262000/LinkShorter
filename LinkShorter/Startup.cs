@@ -32,9 +32,15 @@ namespace LinkShorter
             services.AddControllers();
 
             var config = JObject.Parse(File.ReadAllText("config.json"));
-            services.AddSingleton(new ConfigWrapper(config));
+            var configWrapper = new ConfigWrapper(config);
+            services.AddSingleton(configWrapper);
             services.AddSingleton(new DatabaseWrapper(config));
-            services.AddSingleton(new StringGenerator());
+
+            var stringGenerator = new StringGenerator();
+            services.AddSingleton(stringGenerator);
+            services.AddSingleton(pwd => new PasswordManager(stringGenerator, configWrapper));
+
+
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddCors(options =>
             {
