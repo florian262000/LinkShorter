@@ -7,15 +7,30 @@ namespace LinkShorter
     {
         public string GenerateRandomPath()
         {
-            return RandomString(5).ToLower();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            return RandomString(5, chars).ToLower();
+        }
+
+        public string GenerateRandomSalt()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            return RandomString(32, chars);
+        }
+
+        public string GenerateApiKey()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            return RandomString(29, chars).ToLower();
         }
 
 
         private static Random random = new Random();
 
-        private string RandomString(int length)
+        private string RandomString(int length, string chars)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
