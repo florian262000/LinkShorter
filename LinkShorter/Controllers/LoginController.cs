@@ -30,16 +30,44 @@ namespace LinkShorter.Controllers
         [HttpPost]
         public string Login([FromBody] LoginData loginData)
         {
-            /*Console.WriteLine("username: " + loginData.Username);
-            Console.WriteLine("password: " + loginData.Password);*/
-            return "ok";
+            if (!CheckIfUsernameExists(loginData.Username)) return "username is invalid";
+            // validate password
+            // get salt
+            var sqlQuerySalt = @$"SELECT salt, password, id FROM users WHERE username = '{loginData.Username}';";
+            var querySalt = new NpgsqlCommand(sqlQuerySalt, _databaseWrapper.GetDatabaseConnection());
+            var result = querySalt.ExecuteReader();
+
+            result.Read();
+
+            var salt = result.GetString(0);
+            var password = result.GetString(1);
+            var userid = result.GetGuid(2).ToString();
+            // hash
+
+            Console.WriteLine("uuid:" + userid);
+
+            var hashedUserPasswordInput = _passwordManager.Hash(loginData.Password, salt);
+
+            // set cookie
+
+            if (hashedUserPasswordInput.Equals(password))
+            {
+                // set cookies
+                Response.Cookies.Append("session", _sessionManager.Register(userid));
+
+                return "ok";
+            }
+            else
+            {
+                return "monkaTOS - invalid userdata";
+            }
         }
 
         [Route("register")]
         [HttpPost]
         public string Register([FromBody] LoginData loginData)
         {
-            if (CheckIfDuplicateUsernameExists(loginData.Username)) return "username is already in use";
+            if (CheckIfUsernameExists(loginData.Username)) return "username is already in use";
 
             var salt = _passwordManager.SaltGenerator();
 
@@ -70,7 +98,7 @@ namespace LinkShorter.Controllers
         }
 
 
-        private bool CheckIfDuplicateUsernameExists(string username)
+        private bool CheckIfUsernameExists(string username)
         {
             var checkDuplicates = @$"SELECT username FROM users WHERE username = '{username}' LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
