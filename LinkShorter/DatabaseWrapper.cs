@@ -29,6 +29,8 @@ namespace LinkShorter
                            id UUID  PRIMARY KEY UNIQUE,
                            username text,
                            email text,
+                           password text,
+                           password_salt text,
                            apikey text UNIQUE
                         );";
             var cmd = new NpgsqlCommand(queryCheckUserTable, connection);

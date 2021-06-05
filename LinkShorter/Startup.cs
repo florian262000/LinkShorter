@@ -36,6 +36,11 @@ namespace LinkShorter
             services.AddSingleton(new DatabaseWrapper(config));
             services.AddSingleton(new StringGenerator());
             services.AddRouting(options => options.LowercaseUrls = true);
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +54,7 @@ namespace LinkShorter
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("AllowAllOrigins");
 
             app.UseAuthorization();
 
