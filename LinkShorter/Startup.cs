@@ -57,7 +57,7 @@ namespace LinkShorter
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseCors("AllowAllOrigins");
 
