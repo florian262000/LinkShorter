@@ -43,7 +43,7 @@ namespace LinkShorter.Controllers
             var password = result.GetString(1);
             var userid = result.GetGuid(2).ToString();
             // hash
-
+            result.Close();
             Console.WriteLine("uuid:" + userid);
 
             var hashedUserPasswordInput = _passwordManager.Hash(loginData.Password, salt);
@@ -61,6 +61,14 @@ namespace LinkShorter.Controllers
             {
                 return "monkaTOS - invalid userdata";
             }
+        }
+
+        [HttpPost]
+        [Route("validatesession/{session}")]
+        public bool ValidateSession(string session)
+        {
+            Console.WriteLine("session: " + _sessionManager.VerifySession(session));
+            return _sessionManager.VerifySession(session);
         }
 
         [Route("register")]

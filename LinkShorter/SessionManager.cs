@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace LinkShorter
 {
@@ -21,7 +23,14 @@ namespace LinkShorter
 
         public string GetUserFromSessionId(string sessionId)
         {
-            return !map.TryGetValue(sessionId, out var userid) ? null : userid;
+
+            map.TryGetValue(sessionId, out var userid);
+            return userid;
+        }
+
+        public bool VerifySession(string sessionId)
+        {
+            return GetUserFromSessionId(sessionId) != null;
         }
 
 
