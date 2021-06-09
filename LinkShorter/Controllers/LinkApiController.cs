@@ -39,6 +39,7 @@ namespace LinkShorter.Controllers
                 var cmdUserId = new NpgsqlCommand(queryUserId, _databaseWrapper.GetDatabaseConnection());
 
                 userId = cmdUserId.ExecuteScalar()?.ToString();
+                cmdUserId.Connection?.Close();
             }
             else
             {
