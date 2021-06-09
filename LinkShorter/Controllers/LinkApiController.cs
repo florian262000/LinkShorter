@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using Npgsql;
 
 namespace LinkShorter.Controllers
@@ -48,7 +44,7 @@ namespace LinkShorter.Controllers
             {
                 userId = _sessionManager.GetUserFromSessionId(session);
             }
-            
+
             if (userId == null) return Unauthorized("auth is invalid");
 
 
@@ -56,7 +52,6 @@ namespace LinkShorter.Controllers
                 return Conflict("shortPath does not start with 'api'");
             if (!(linkAddApiPost.TargetUrl.StartsWith("http://") || linkAddApiPost.TargetUrl.StartsWith("https://")))
                 return BadRequest("The target url must start with http:// or https://");
-            
 
 
             // generate shortPath and set
@@ -95,13 +90,58 @@ namespace LinkShorter.Controllers
         }
 
 
+        [HttpGet]
+        [Route("getuserspecificlinks")]
+        public IActionResult GetUserSpecificLinks()
+        {
+            Request.Cookies.TryGetValue("session", out var session);
+            if (session == null) return Unauthorized();
+
+            var userId = _sessionManager.GetUserFromSessionId(session);
+            if (userId == null) return Unauthorized();
+
+            var links = new List<LinkData>();
+
+            var sqlQuery =
+                @$"SELECT id, targeturl, shortpath, clickcounter, createdat, creatoruuid FROM links WHERE creatoruuid = '{userId}';";
+            var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
+            var result = query.ExecuteReader();
+
+            Console.WriteLine("#################################");
+            while (result.Read())
+            {
+                var linkData = new LinkData()
+                {
+                    Id = result.GetGuid(0),
+                    TargetUrl = result.GetString(1),
+                    ShortPath = result.GetString(2),
+                    ClickCounter = result.GetInt32(3),
+                    TimeStamp = result.GetTimeStamp(4).ToString(),
+                    CreatorId = result.GetGuid(5)
+                };
+
+                //var jsonString = JsonConvert.SerializeObject(linkData);
+                //jsonString = jsonString.Replace("\\", "");
+                links.Add(linkData);
+            }
+
+
+            Console.WriteLine("#################################");
+
+            result.Close();
+
+            Console.WriteLine(JsonConvert.SerializeObject(links));
+            return Ok(JsonConvert.SerializeObject(links));
+        }
+
+
         private string GenerateUniqueShortPath()
         {
             while (true)
             {
                 var shortPath = _stringGenerator.GenerateRandomPath();
-                var duplicates = CheckIfDuplicateExists(shortPath);
 
+                var duplicates = CheckIfDuplicateExists(shortPath);
                 if (duplicates) continue;
                 return shortPath;
             }
