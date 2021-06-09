@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
@@ -69,23 +70,33 @@ namespace LinkShorter.Controllers
             return _sessionManager.VerifySession(session);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [Route("getusername/{session}")]
         public string GetUsername(string session)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            while (true)
+            {
+                if (sw.ElapsedMilliseconds <= 5000) continue;
+                sw.Stop();
+                break;
+            }
+
             var userid = _sessionManager.GetUserFromSessionId(session);
 
-            /*var usernameSql = @$"SELECT username FROM users WHERE id = '{userid}' LIMIT 1;";
+            var usernameSql = @$"SELECT username FROM users WHERE id = '{userid}' LIMIT 1;";
             var usernameQuery = new NpgsqlCommand(usernameSql, _databaseWrapper.GetDatabaseConnection());
 
             var result = usernameQuery.ExecuteReader();
             result.Read();
             var username = "" + result.GetString(0);
-            result.Close();*/
+            result.Close();
 
 
-            return userid;
-        }
+            return username;
+        }*/
 
         [Route("register")]
         [HttpPost]
