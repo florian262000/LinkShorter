@@ -1,4 +1,4 @@
-if [ -d "wwwroot" ]; then
+if [ ! -d "wwwroot" ]; then
     mkdir wwwroot  
 else 
   rm -r wwwroot/* 
