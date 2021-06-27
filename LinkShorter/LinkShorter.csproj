@@ -15,5 +15,21 @@
       <Folder Include="wwwroot" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="frontend\dist\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="frontend\dist\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="frontend\dist\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="frontend\dist\**" />
+    </ItemGroup>
+
 
 </Project>

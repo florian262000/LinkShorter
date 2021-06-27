@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,8 +17,30 @@ namespace LinkShorter
     {
         public static void Main(string[] args)
         {
+            // create config file if not exits
+            if (!File.Exists("config.json"))
+            {
+                using (var outputFile = new StreamWriter("config.json"))
+                {
+                    outputFile.Write("{"+
+                                    "\"database\": { "+
+                                    "\"host\": \"DEFAULT\", " +
+                                    "\"username\": \"DEFAULT\"," +
+                                    "\"password\": \"DEFAULT\", " +
+                                "\"name\": \"DEFAULT\" " +
+                            "},"+
+                            "\"urlbase\": \"DEFAULT\","+
+                              "\"password_pepper\": \"DEFAULT\""+
+                        "}");
+                    
+                }
+                // run deploy script up
 
-            CreateHostBuilder(args).Build().Run();
+                CreateHostBuilder(args).Build().Run();
+            }
+            var startInfo = new ProcessStartInfo() { FileName = "/bin/bash", Arguments = "deployVue.sh", }; 
+            var proc = new Process() { StartInfo = startInfo, };
+            proc.Start();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
