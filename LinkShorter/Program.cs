@@ -37,9 +37,6 @@ namespace LinkShorter
                 // run deploy script up
 
             }
-            var startInfo = new ProcessStartInfo() { FileName = "/bin/bash", Arguments = "deployVue.sh", }; 
-            var proc = new Process() { StartInfo = startInfo, };
-            proc.Start();
             
             CreateHostBuilder(args).Build().Run();
 
