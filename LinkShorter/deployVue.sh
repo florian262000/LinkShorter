@@ -1,7 +1,7 @@
 if [ ! -d "wwwroot" ]; then
     mkdir wwwroot  
 else 
-  rm -r wwwroot/* 
+  rm -rf wwwroot/* 
 fi
 
 cd frontend
