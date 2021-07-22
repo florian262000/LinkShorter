@@ -27,7 +27,6 @@
           "
         />
         <form-register
-          @oauth-push="(v) => (oauthUrl = v)"
           @error-push="
             (e) => {
               showSnackbar = true;
@@ -50,8 +49,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import FormLogin from "../components/FormLogin.vue";
-import FormRegister from "../components/FormRegister.vue";
+import FormLogin from "./FormLogin.vue";
+import FormRegister from "./FormRegister.vue";
 
 export default Vue.extend({
   components: { FormLogin, FormRegister },
