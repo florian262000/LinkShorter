@@ -67,7 +67,11 @@ export default Vue.extend({
         // this.setUserId(data.id);
         // this.setUsername(data.username);
       } catch (e) {
-        this.$emit("error-push", "An error occured");
+        if (e.status < 500) {
+          this.$emit("error-push", "An undefined error occured, please try again (file a bug report if this persists)");
+        } else {
+          this.$emit("error-push", "The server encountered an error, please try again later");
+        }
       }
     },
   },
