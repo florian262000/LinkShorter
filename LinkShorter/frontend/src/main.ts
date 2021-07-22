@@ -2,14 +2,19 @@ import Vue from "vue";
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import store from "./store";
-import { extend } from "vee-validate";
+import { extend, localize } from "vee-validate";
+import en from "vee-validate/dist/locale/en.json";
 import * as rules from "vee-validate/dist/rules";
 
+// Setup vee-validate ruleset
 for (const [rule, validation] of Object.entries(rules)) {
   extend(rule, {
     ...validation,
   });
 }
+
+// Localization for vee-validate
+localize("en", en);
 
 Vue.config.productionTip = false;
 

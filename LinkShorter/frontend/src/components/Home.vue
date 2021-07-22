@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height justify-center>
     <v-card elevation="2">
-      <v-card-title class="text-lg-h1 text-md-h2 text-h3"> Login/Sign Up </v-card-title>
+      <v-card-title class="text-lg-h1 text-h4"> Login/Sign Up </v-card-title>
       <v-card-actions>
         <v-tabs v-model="shouldRegister" color="primary" slider-color="primary" fixed-tabs>
           <v-tab :key="false"> Login </v-tab>

@@ -4,6 +4,7 @@
     "module": "esnext",
     "strict": true,
     "noImplicitThis": true,
+    "resolveJsonModule": true,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -18,12 +19,6 @@
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
   "exclude": ["node_modules"]
 }
