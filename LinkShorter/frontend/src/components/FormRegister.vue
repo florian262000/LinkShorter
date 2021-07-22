@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import axios from "axios";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default Vue.extend({
@@ -32,34 +33,33 @@ export default Vue.extend({
   data() {
     return {
       username: "",
-      email: "",
       password: "",
+      passConfirm: "",
     };
   },
   methods: {
     async submit() {
       try {
-        const response = await fetch("/api/user/register/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password,
-          }),
-        });
+        // let response = await axios.post("api/login/register", {
+        //   username: this.username,
+        //   password: this.password,
+        // });
 
-        if (!response.ok) {
-          throw response;
-        }
+        // if (response.status) {
+        //   throw response;
+        // }
 
-        const data = await response.json();
-
-        this.$emit("oauth-push", data.oauthUrl);
+        this.$emit("success", `${this.username}, you successfully registered and can now log in!`);
       } catch (e) {
-        const data = await e.json();
-        this.$emit("error-push", data.errorMessage);
+        if (e.status < 500) {
+          this.$emit("error-push", "An undefined error occured, please try again");
+        } else {
+          this.$emit("error-push", "The server encountered an error, please try again later");
+        }
+      } finally {
+        this.username = "";
+        this.password = "";
+        this.passConfirm = "";
       }
     },
   },

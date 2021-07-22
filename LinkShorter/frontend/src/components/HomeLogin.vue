@@ -27,6 +27,13 @@
           "
         />
         <form-register
+          @success="
+            (m) => {
+              showSnackbar = true;
+              snackbarColor = 'success';
+              snackbarMessage = m;
+            }
+          "
           @error-push="
             (e) => {
               showSnackbar = true;

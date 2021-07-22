@@ -3,6 +3,7 @@
     <navbar />
     <v-main>
       <home-login v-if="!$store.state.isLoggedIn" />
+      <home-login v-if="true" />
       <home-default v-else />
     </v-main>
   </v-app>

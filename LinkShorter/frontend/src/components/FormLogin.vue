@@ -21,6 +21,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { mapMutations } from "vuex";
 
 export default Vue.extend({
   components: {
@@ -35,30 +36,31 @@ export default Vue.extend({
     };
   },
   methods: {
+    ...mapMutations(["setIsLoggedIn"]),
     async submit(): Promise<void> {
       try {
-        const response = await fetch("/api/user/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password,
-            token: this.totp,
-          }),
-        });
+        // const response = await fetch("/api/user/login", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     username: this.username,
+        //     password: this.password,
+        //     token: this.totp,
+        //   }),
+        // });
 
-        if (!response.ok) {
-          throw response;
-        }
+        // if (!response.ok) {
+        //   throw response;
+        // }
 
-        const data = await response.json();
+        // const data = await response.json();
 
-        // this.setIsLoggedIn(true);
+        this.$emit("success");
+        this.setIsLoggedIn(true);
         // this.setUserId(data.id);
         // this.setUsername(data.username);
-        this.$emit("success", data.username);
       } catch (e) {
         const data = await e.json();
         this.$emit("error-push", data.errorMessage);
