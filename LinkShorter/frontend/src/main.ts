@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import store from "./store";
+import VueCookies from "vue-cookies";
 import { extend, localize } from "vee-validate";
 import en from "vee-validate/dist/locale/en.json";
 import * as rules from "vee-validate/dist/rules";
@@ -15,6 +16,8 @@ for (const [rule, validation] of Object.entries(rules)) {
 
 // Localization for vee-validate
 localize("en", en);
+
+Vue.use(VueCookies);
 
 Vue.config.productionTip = false;
 

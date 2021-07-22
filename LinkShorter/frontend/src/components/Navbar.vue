@@ -1,8 +1,5 @@
 <template>
   <v-app-bar app flat dark>
-    <v-btn @click="$store.state.isLoggedIn = !$store.state.isLoggedIn" color="error" icon>
-      <v-icon>mdi-dev-to</v-icon>
-    </v-btn>
     <v-btn @click="toggleDarkTheme()" icon>
       <v-icon>mdi-theme-light-dark</v-icon>
     </v-btn>
