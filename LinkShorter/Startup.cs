@@ -41,11 +41,11 @@ namespace LinkShorter
             services.AddSingleton(pwd => new PasswordManager(stringGenerator, configWrapper));
             services.AddSingleton(SessionManager => new SessionManager(stringGenerator));
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddCors(options =>
+            /*services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
-                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
-            });
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,13 +55,18 @@ namespace LinkShorter
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stelz");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stelz"); });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCors(
+                options => options
+                    .WithOrigins("https://localhost:5001")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+            );
             app.UseRouting();
             app.UseCors("AllowAllOrigins");
 
