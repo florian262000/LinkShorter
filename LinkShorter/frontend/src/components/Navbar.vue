@@ -4,11 +4,7 @@
     <v-app-bar-title class="text-center text-h3">LinkShorter</v-app-bar-title>
 
     <v-spacer></v-spacer>
-    <v-btn
-      href="https://github.com/florian262000/LinkShorter"
-      target="_blank"
-      icon
-    >
+    <v-btn href="https://github.com/florian262000/LinkShorter" target="_blank" icon>
       <v-icon>mdi-github</v-icon>
     </v-btn>
   </v-app-bar>

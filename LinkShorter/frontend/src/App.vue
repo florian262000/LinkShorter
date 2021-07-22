@@ -1,12 +1,15 @@
 <template>
   <v-app>
     <navbar />
-    <v-main> </v-main>
+    <v-main>
+      <home />
+    </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import Home from "./components/Home.vue";
 import Navbar from "./components/Navbar.vue";
 
 export default Vue.extend({
@@ -14,6 +17,7 @@ export default Vue.extend({
 
   components: {
     Navbar,
+    Home,
   },
 
   data: () => ({}),

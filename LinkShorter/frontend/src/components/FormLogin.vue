@@ -13,9 +13,6 @@
           required
         ></v-text-field>
       </validation-provider>
-      <validation-provider v-slot="{ errors }" rules="required|digits:6" name="TOTP">
-        <v-text-field type="text" label="TOTP" :error-messages="errors" v-model="totp" required></v-text-field>
-      </validation-provider>
       <v-btn text color="primary" type="submit" :disabled="invalid"> Login </v-btn>
     </form>
   </validation-observer>
@@ -27,8 +24,8 @@ import { ValidationProvider, ValidationObserver } from "vee-validate";
 
 export default Vue.extend({
   components: {
-    ValidationObserver,
     ValidationProvider,
+    ValidationObserver,
   },
   data() {
     return {
