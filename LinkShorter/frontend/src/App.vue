@@ -3,7 +3,6 @@
     <navbar />
     <v-main>
       <home-login v-if="!$store.state.isLoggedIn" />
-      <home-login v-if="true" />
       <home-default v-else />
     </v-main>
   </v-app>
@@ -24,9 +23,15 @@ export default Vue.extend({
     HomeDefault,
   },
   mounted() {
-    if (localStorage.darkTheme) {
-      this.$vuetify.theme.dark = JSON.parse(localStorage.darkTheme);
-    }
+    this.loadTheme();
+  },
+  methods: {
+    loadTheme(): void {
+      if (localStorage.darkTheme) {
+        this.$vuetify.theme.dark = JSON.parse(localStorage.darkTheme);
+      }
+    },
+    loadSession(): void {},
   },
   data: () => ({}),
 });

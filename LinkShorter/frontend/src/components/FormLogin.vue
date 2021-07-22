@@ -40,8 +40,7 @@ export default Vue.extend({
     ...mapMutations(["setIsLoggedIn", "setUserId", "setUsername"]),
     async submit(): Promise<void> {
       try {
-        console.log("kekw");
-
+        // session cookie is automatically saved in browser's cookie storage
         const response = await axios.post(
           "api/login/login",
           {
@@ -57,15 +56,10 @@ export default Vue.extend({
           throw response;
         }
 
-        const data = await response.data;
-
-        const headers = await response.headers["set-cookie"];
-        console.log(`Headers: ${headers}`);
-
+        // TODO: not showing anything as the component update supresses the snackbar (probably just remove this tbh)
         this.$emit("success", this.username);
         this.setIsLoggedIn(true);
-        // this.setUserId(data.id);
-        // this.setUsername(data.username);
+        this.setUsername(this.username);
       } catch (e) {
         if (e.status < 500) {
           this.$emit("error-push", "An undefined error occured, please try again (file a bug report if this persists)");
