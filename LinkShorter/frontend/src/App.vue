@@ -23,3 +23,9 @@ export default Vue.extend({
   data: () => ({}),
 });
 </script>
+
+<style>
+html {
+  overflow-y: auto;
+}
+</style>

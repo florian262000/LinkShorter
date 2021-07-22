@@ -4,8 +4,16 @@
       <validation-provider v-slot="{ errors }" rules="required" name="username">
         <v-text-field label="Username" v-model="username" :error-messages="errors"></v-text-field>
       </validation-provider>
-      <validation-provider v-slot="{ errors }" rules="required" name="password">
+      <validation-provider v-slot="{ errors }" rules="required|min:8|confirmed:passConfirm" name="password">
         <v-text-field label="Password" type="password" :error-messages="errors" v-model="password"></v-text-field>
+      </validation-provider>
+      <validation-provider v-slot="{ errors }" vid="passConfirm">
+        <v-text-field
+          label="Password confirmation"
+          type="password"
+          :error-messages="errors"
+          v-model="passConfirm"
+        ></v-text-field>
       </validation-provider>
       <v-btn text color="primary" type="submit" :disabled="invalid"> Sign Up </v-btn>
     </form>
