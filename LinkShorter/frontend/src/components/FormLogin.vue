@@ -22,6 +22,7 @@
 import Vue from "vue";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import { mapMutations } from "vuex";
+import axios from "axios";
 
 export default Vue.extend({
   components: {
@@ -36,34 +37,37 @@ export default Vue.extend({
     };
   },
   methods: {
-    ...mapMutations(["setIsLoggedIn"]),
+    ...mapMutations(["setIsLoggedIn", "setUserId", "setUsername"]),
     async submit(): Promise<void> {
       try {
-        // const response = await fetch("/api/user/login", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     username: this.username,
-        //     password: this.password,
-        //     token: this.totp,
-        //   }),
-        // });
+        console.log("kekw");
 
-        // if (!response.ok) {
-        //   throw response;
-        // }
+        const response = await axios.post(
+          "api/login/login",
+          {
+            Username: this.username,
+            Password: this.password,
+          },
+          {
+            withCredentials: true,
+          }
+        );
 
-        // const data = await response.json();
+        if (response.status !== 200) {
+          throw response;
+        }
 
-        this.$emit("success");
+        const data = await response.data;
+
+        const headers = await response.headers["set-cookie"];
+        console.log(`Headers: ${headers}`);
+
+        this.$emit("success", this.username);
         this.setIsLoggedIn(true);
         // this.setUserId(data.id);
         // this.setUsername(data.username);
       } catch (e) {
-        const data = await e.json();
-        this.$emit("error-push", data.errorMessage);
+        this.$emit("error-push", "An error occured");
       }
     },
   },

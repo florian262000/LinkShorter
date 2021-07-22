@@ -40,19 +40,19 @@ export default Vue.extend({
   methods: {
     async submit() {
       try {
-        // let response = await axios.post("api/login/register", {
-        //   username: this.username,
-        //   password: this.password,
-        // });
+        const response = await axios.post("api/login/register", {
+          Username: this.username,
+          Password: this.password,
+        });
 
-        // if (response.status) {
-        //   throw response;
-        // }
+        if (response.status !== 200) {
+          throw response;
+        }
 
         this.$emit("success", `${this.username}, you successfully registered and can now log in!`);
       } catch (e) {
         if (e.status < 500) {
-          this.$emit("error-push", "An undefined error occured, please try again");
+          this.$emit("error-push", "An undefined error occured, please try again (file a bug report if this persists)");
         } else {
           this.$emit("error-push", "The server encountered an error, please try again later");
         }
