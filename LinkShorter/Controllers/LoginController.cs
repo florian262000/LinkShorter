@@ -27,9 +27,9 @@ namespace LinkShorter.Controllers
 
         [Route("login")]
         [HttpPost]
-        public string Login([FromBody] LoginData loginData)
+        public ActionResult Login([FromBody] LoginData loginData)
         {
-            if (!CheckIfUsernameExists(loginData.Username)) return "username is invalid";
+            if (!CheckIfUsernameExists(loginData.Username)) return StatusCode(404, "json: user not found lul");
             // validate password
             // get salt
             var sqlQuerySalt = @$"SELECT salt, password, id FROM users WHERE username = '{loginData.Username}';";
@@ -54,11 +54,11 @@ namespace LinkShorter.Controllers
                 // set cookies
                 Response.Cookies.Append("session", _sessionManager.Register(userid));
 
-                return "ok";
+                return StatusCode(200, "json: login succeeded");
             }
             else
             {
-                return "monkaTOS - invalid userdata";
+                return StatusCode(401, "monkaTOS - invalid userdata");
             }
         }
 
@@ -70,39 +70,12 @@ namespace LinkShorter.Controllers
             return _sessionManager.VerifySession(session);
         }
 
-        /*[HttpPost]
-        [Route("getusername/{session}")]
-        public string GetUsername(string session)
-        {
-            var sw = new Stopwatch();
-            sw.Start();
-
-            while (true)
-            {
-                if (sw.ElapsedMilliseconds <= 5000) continue;
-                sw.Stop();
-                break;
-            }
-
-            var userid = _sessionManager.GetUserFromSessionId(session);
-
-            var usernameSql = @$"SELECT username FROM users WHERE id = '{userid}' LIMIT 1;";
-            var usernameQuery = new NpgsqlCommand(usernameSql, _databaseWrapper.GetDatabaseConnection());
-
-            var result = usernameQuery.ExecuteReader();
-            result.Read();
-            var username = "" + result.GetString(0);
-            result.Close();
-
-
-            return username;
-        }*/
-
         [Route("register")]
         [HttpPost]
-        public string Register([FromBody] LoginData loginData)
+        public ActionResult Register([FromBody] LoginData loginData)
         {
-            if (CheckIfUsernameExists(loginData.Username)) return "username is already in use";
+            if (CheckIfUsernameExists(loginData.Username))
+                return StatusCode(409, "json: username already in use, try another one lul xD");
 
             var salt = _passwordManager.SaltGenerator();
 
@@ -129,7 +102,7 @@ namespace LinkShorter.Controllers
             Console.WriteLine("userid: " + result.ToString());
 
             Response.Cookies.Append("session", _sessionManager.Register(result.ToString()));
-            return "ok";
+            return StatusCode(200, "json: yep registration successful");
         }
 
 
