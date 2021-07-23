@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Npgsql;
@@ -27,6 +28,10 @@ namespace LinkShorter.Controllers
 
         [HttpPost]
         [Route("add")]
+        /// <response code="200">login ok</response>
+        /// <response code="401">invalid userdata</response>            
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Add([FromBody] LinkAddApiPost linkAddApiPost)
         {
             Request.Headers.TryGetValue("x-api-key", out var apikey);
@@ -88,6 +93,8 @@ namespace LinkShorter.Controllers
 
         [HttpGet]
         [Route("getuniqueshortpath")]
+        /// <response code="200">short path</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public string GetUniqueShortPath()
         {
             return GenerateUniqueShortPath();
@@ -96,6 +103,10 @@ namespace LinkShorter.Controllers
 
         [HttpGet]
         [Route("getuserspecificlinks")]
+        /// <response code="200">login ok</response>
+        /// <response code="401">unautherized</response>            
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetUserSpecificLinks()
         {
             Request.Cookies.TryGetValue("session", out var session);
