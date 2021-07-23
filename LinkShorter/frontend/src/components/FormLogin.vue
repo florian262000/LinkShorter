@@ -21,6 +21,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { mapMutations } from "vuex";
+import axios from "axios";
 
 export default Vue.extend({
   components: {
@@ -35,33 +37,35 @@ export default Vue.extend({
     };
   },
   methods: {
+    ...mapMutations(["setIsLoggedIn", "setUserId", "setUsername"]),
     async submit(): Promise<void> {
       try {
-        const response = await fetch("/api/user/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        // session cookie is automatically saved in browser's cookie storage
+        const response = await axios.post(
+          "api/login/login",
+          {
+            Username: this.username,
+            Password: this.password,
           },
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password,
-            token: this.totp,
-          }),
-        });
+          {
+            withCredentials: true,
+          }
+        );
 
-        if (!response.ok) {
+        if (response.status !== 200) {
           throw response;
         }
 
-        const data = await response.json();
-
-        // this.setIsLoggedIn(true);
-        // this.setUserId(data.id);
-        // this.setUsername(data.username);
-        this.$emit("success", data.username);
+        // TODO: not showing anything as the component update supresses the snackbar (probably just remove this tbh)
+        this.$emit("success", this.username);
+        this.setIsLoggedIn(true);
+        this.setUsername(this.username);
       } catch (e) {
-        const data = await e.json();
-        this.$emit("error-push", data.errorMessage);
+        if (e.status < 500) {
+          this.$emit("error-push", "An undefined error occured, please try again (file a bug report if this persists)");
+        } else {
+          this.$emit("error-push", "The server encountered an error, please try again later");
+        }
       }
     },
   },

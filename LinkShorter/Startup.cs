@@ -35,7 +35,7 @@ namespace LinkShorter
             var configWrapper = new ConfigWrapper(config);
             services.AddSingleton(configWrapper);
             services.AddSingleton(new DatabaseWrapper(config));
-
+            services.AddSwaggerGen();
             var stringGenerator = new StringGenerator();
             services.AddSingleton(stringGenerator);
             services.AddSingleton(pwd => new PasswordManager(stringGenerator, configWrapper));
@@ -56,10 +56,18 @@ namespace LinkShorter
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stelz"); });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCors(
+                options => options
+                    .WithOrigins("http://localhost:8080")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+            );
             app.UseRouting();
-            app.UseCors("AllowAllOrigins");
 
             app.UseAuthorization();
 
