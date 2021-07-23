@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
@@ -24,9 +25,12 @@ namespace LinkShorter.Controllers
             this._sessionManager = sessionManager;
         }
 
-
-        [Route("login")]
         [HttpPost]
+        [Route("login")]
+        /// <response code="201">login ok</response>
+        /// <response code="400">user unautherized</response>            
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult Login([FromBody] LoginData loginData)
         {
             if (!CheckIfUsernameExists(loginData.Username)) return StatusCode(404, "json: user not found lul");
@@ -64,14 +68,29 @@ namespace LinkShorter.Controllers
 
         [HttpPost]
         [Route("validatesession/{session}")]
-        public bool ValidateSession(string session)
+        /// <response code="201">login ok</response>
+        /// <response code="400">user unautherized</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult ValidateSession(string session)
         {
             Console.WriteLine("session: " + _sessionManager.VerifySession(session));
-            return _sessionManager.VerifySession(session);
+            if (_sessionManager.VerifySession(session))
+            {
+                return StatusCode(200, "sdfsdf");
+            }
+            else
+            {
+                return StatusCode(404, "sdfsdf");
+            }
         }
 
         [Route("register")]
         [HttpPost]
+        /// <response code="409">login ok</response>
+        /// <response code="200">user unautherized</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult Register([FromBody] LoginData loginData)
         {
             if (CheckIfUsernameExists(loginData.Username))
