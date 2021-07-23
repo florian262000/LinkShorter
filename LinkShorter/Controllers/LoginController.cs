@@ -27,8 +27,8 @@ namespace LinkShorter.Controllers
 
         [HttpPost]
         [Route("login")]
-        /// <response code="201">login ok</response>
-        /// <response code="400">user unautherized</response>            
+        /// <response code="200">login ok</response>
+        /// <response code="401">invalid userdata</response>            
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult Login([FromBody] LoginData loginData)
@@ -68,7 +68,7 @@ namespace LinkShorter.Controllers
 
         [HttpPost]
         [Route("validatesession/{session}")]
-        /// <response code="200">session ok FeelsOkMan</response>
+        /// <response code="200">session ok</response>
         /// <response code="404">session not found</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
