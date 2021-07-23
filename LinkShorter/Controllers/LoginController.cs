@@ -56,8 +56,6 @@ namespace LinkShorter.Controllers
             if (hashedUserPasswordInput.Equals(password))
             {
                 // set cookies
-                Response.Cookies.Append("session", _sessionManager.Register(userid));
-
                 return StatusCode(200, "json: login succeeded");
             }
             else
@@ -82,6 +80,25 @@ namespace LinkShorter.Controllers
             else
             {
                 return StatusCode(404, "sdfsdf");
+            }
+        }
+
+        [Route("getusername")]
+        [HttpPost]
+        /// <response code="401">conflict </response>
+        /// <response code="200">reg successfull</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult GetUserName()
+        {
+            Request.Cookies.TryGetValue("session", out var sessionId);
+            if (_sessionManager.VerifySession(sessionId))
+            {
+                return StatusCode(200, "Markus");
+            }
+            else
+            {
+                return StatusCode(401, "json: Unauthorized");
             }
         }
 
@@ -124,7 +141,7 @@ namespace LinkShorter.Controllers
             return StatusCode(200, "json: yep registration successful");
         }
 
-        
+
         private bool CheckIfUsernameExists(string username)
         {
             var checkDuplicates = @$"SELECT username FROM users WHERE username = '{username}' LIMIT 1;";
