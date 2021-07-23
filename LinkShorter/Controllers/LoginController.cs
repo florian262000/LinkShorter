@@ -68,8 +68,8 @@ namespace LinkShorter.Controllers
 
         [HttpPost]
         [Route("validatesession/{session}")]
-        /// <response code="201">login ok</response>
-        /// <response code="400">user unautherized</response>
+        /// <response code="200">session ok FeelsOkMan</response>
+        /// <response code="404">session not found</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult ValidateSession(string session)
@@ -87,8 +87,8 @@ namespace LinkShorter.Controllers
 
         [Route("register")]
         [HttpPost]
-        /// <response code="409">login ok</response>
-        /// <response code="200">user unautherized</response>
+        /// <response code="409">conflict </response>
+        /// <response code="200">reg successfull</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult Register([FromBody] LoginData loginData)
@@ -124,7 +124,7 @@ namespace LinkShorter.Controllers
             return StatusCode(200, "json: yep registration successful");
         }
 
-
+        
         private bool CheckIfUsernameExists(string username)
         {
             var checkDuplicates = @$"SELECT username FROM users WHERE username = '{username}' LIMIT 1;";
