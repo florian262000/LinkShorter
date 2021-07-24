@@ -14,6 +14,16 @@ for (const [rule, validation] of Object.entries(rules)) {
   });
 }
 
+// Custom rule to validate URLs
+
+extend("url", (v: string) => {
+  if (v.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,63}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/)) {
+    return true;
+  }
+
+  return "URL is not valid!";
+});
+
 // Localization for vee-validate
 localize("en", en);
 
