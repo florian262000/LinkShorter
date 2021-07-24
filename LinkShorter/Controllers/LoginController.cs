@@ -39,7 +39,7 @@ namespace LinkShorter.Controllers
             {
                 response["status"] = "error";
                 response["data"] = JObject.FromObject(new {message = "user does not exits"});
-                return StatusCode(404, response);
+                return StatusCode(404, response.ToString());
             }
 
             // validate password
@@ -70,14 +70,16 @@ namespace LinkShorter.Controllers
                 response["status"] = "success";
                 response["data"] = JObject.FromObject(new {message = "user login was successful"});
 
+                Response.Cookies.Append("session", _sessionManager.Register(userid));
+                Console.WriteLine(response.ToString());
 
-                return StatusCode(200, response);
+                return StatusCode(200, response.ToString());
             }
             else
             {
                 response["status"] = "error";
                 response["data"] = JObject.FromObject(new {message = "password does not match"});
-                return StatusCode(401, response);
+                return StatusCode(401, response.ToString());
             }
         }
 
@@ -89,14 +91,20 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult ValidateSession(string session)
         {
+            var response = new JObject();
             Console.WriteLine("session: " + _sessionManager.VerifySession(session));
-            if (_sessionManager.VerifySession(session))
+            if (session != null && _sessionManager.VerifySession(session))
             {
-                return StatusCode(200, "sdfsdf");
+                response["status"] = "success";
+                response["data"] = JObject.FromObject(new {message = "session still alive"});
+
+                return StatusCode(200, response.ToString());
             }
             else
             {
-                return StatusCode(404, "sdfsdf");
+                response["status"] = "error";
+                response["data"] = JObject.FromObject(new {message = "session is invalid"});
+                return StatusCode(404, response.ToString());
             }
         }
 
@@ -108,15 +116,21 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult GetUserName()
         {
+            var response = new JObject();
+
             Request.Cookies.TryGetValue("session", out var sessionId);
-            if (_sessionManager.VerifySession(sessionId))
+            if (sessionId != null && _sessionManager.VerifySession(sessionId))
             {
                 //todo change to correct name
-                return StatusCode(200, "Markus");
+                response["status"] = "success";
+                response["data"] = JObject.FromObject(new {name = "Markus", message = "username"});
+                return StatusCode(200, response.ToString());
             }
             else
             {
-                return StatusCode(401, "json: Unauthorized");
+                response["status"] = "error";
+                response["data"] = JObject.FromObject(new {message = "user is not lodged in"});
+                return StatusCode(401, response.ToString());
             }
         }
 
@@ -128,8 +142,14 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult Register([FromBody] LoginData loginData)
         {
+            var response = new JObject();
+
             if (CheckIfUsernameExists(loginData.Username))
-                return StatusCode(409, "json: username already in use, try another one lul xD");
+            {
+                response["status"] = "error";
+                response["data"] = JObject.FromObject(new {message = "username already in use, try another one"});
+                return StatusCode(409, response.ToString());
+            }
 
             var salt = _passwordManager.SaltGenerator();
 
@@ -156,7 +176,10 @@ namespace LinkShorter.Controllers
             Console.WriteLine("userid: " + result.ToString());
 
             Response.Cookies.Append("session", _sessionManager.Register(result.ToString()));
-            return StatusCode(200, "json: yep registration successful");
+
+            response["status"] = "success";
+            response["data"] = JObject.FromObject(new {message = "login successful"});
+            return StatusCode(200, response.ToString());
         }
 
 
