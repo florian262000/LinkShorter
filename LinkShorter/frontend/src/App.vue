@@ -14,6 +14,7 @@ import HomeLogin from "./components/HomeLogin.vue";
 import HomeDefault from "./components/HomeDefault.vue";
 import Navbar from "./components/Navbar.vue";
 import { mapMutations, mapActions } from "vuex";
+import axios from "axios";
 
 export default Vue.extend({
   name: "App",
@@ -35,13 +36,37 @@ export default Vue.extend({
         this.$vuetify.theme.dark = JSON.parse(localStorage.darkTheme);
       }
     },
-    loadSession(): void {
+    async loadSession(): Promise<void> {
       const session = this.$cookies.get("session");
       if (session) {
-        // TODO: actually fetch username from session cookie
-        this.setUsername("kekwfuntkioniertnochnichtlmao");
-        this.setIsLoggedIn(true);
+        try {
+          const username = await this.fetchUsernameFromSession();
+
+          this.setUsername(username);
+          this.setIsLoggedIn(true);
+        } catch (e) {
+          if (e.status < 500) {
+            if (e.status === 401) {
+              console.log("Get username - unauthorized");
+            } else {
+              console.log("Get username - unexpected");
+            }
+          } else {
+            console.log("Get username - server error");
+          }
+        }
       }
+    },
+    async fetchUsernameFromSession(): Promise<any> {
+      const response = await axios.post("/api/login/getusername", {}, { withCredentials: true });
+
+      if (response.status !== 200) {
+        throw response;
+      }
+
+      const data = await response.data;
+
+      return data;
     },
     loadShortlinks(): void {
       try {

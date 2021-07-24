@@ -2,7 +2,7 @@
   <v-container fill-height>
     <v-row>
       <v-col>
-        <h1 class="text-center text-md-h2 text-h4 truncate">
+        <h1 class="text-center text-md-h2 text-h4 truncate pa-2">
           Good to see you, <br />
           {{ $store.state.username }}
         </h1>
