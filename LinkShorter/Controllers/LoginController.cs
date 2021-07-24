@@ -56,6 +56,7 @@ namespace LinkShorter.Controllers
             if (hashedUserPasswordInput.Equals(password))
             {
                 // set cookies
+                Response.Cookies.Append("session", _sessionManager.Register(userid));
                 return StatusCode(200, "json: login succeeded");
             }
             else
