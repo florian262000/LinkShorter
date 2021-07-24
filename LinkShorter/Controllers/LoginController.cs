@@ -94,6 +94,7 @@ namespace LinkShorter.Controllers
             Request.Cookies.TryGetValue("session", out var sessionId);
             if (_sessionManager.VerifySession(sessionId))
             {
+                //todo change to correct name
                 return StatusCode(200, "Markus");
             }
             else

@@ -103,6 +103,24 @@ namespace LinkShorter.Controllers
 
         [HttpGet]
         [Route("getuserspecificlinks")]
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET
+        ///     {
+        ///         [
+        ///                 {
+        ///                     "Id": "",
+        ///                     "TargetUrl": "",
+        ///                     "ShortPath": "",
+        ///                     "ClickCounter": "",
+        ///                     "TimeStamp": "",
+        ///                     "CreatorId": ""
+        ///                 }       
+        ///         ]
+        ///     }
+        ///
+        /// </remarks>
         /// <response code="200">login ok</response>
         /// <response code="401">unautherized</response>            
         [ProducesResponseType(StatusCodes.Status200OK)]
