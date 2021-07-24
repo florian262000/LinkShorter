@@ -67,7 +67,7 @@ namespace LinkShorter.Controllers
             // generate shortPath and set
 
 
-            //todo check for duplacates
+            //todo check for duplicates
             if (linkAddApiPost.ShortPath == null)
             {
                 linkAddApiPost.ShortPath = GenerateUniqueShortPath();
