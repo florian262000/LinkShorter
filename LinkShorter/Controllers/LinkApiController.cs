@@ -26,6 +26,9 @@ namespace LinkShorter.Controllers
             this._sessionManager = sessionManager;
         }
 
+        
+        
+        //todo short link: min:4 max 64
         [HttpPost]
         [Route("add")]
         /// <response code="200">login ok</response>
@@ -76,7 +79,7 @@ namespace LinkShorter.Controllers
                     return Conflict("shortpath already in use");
                 }
             }
-            
+
             //test123
 
 
@@ -103,7 +106,7 @@ namespace LinkShorter.Controllers
 
         [HttpGet]
         [Route("getuserspecificlinks")]
-        /// <remarks>
+        /// <summary>
         /// Sample request:
         ///
         ///     GET
@@ -120,7 +123,7 @@ namespace LinkShorter.Controllers
         ///         ]
         ///     }
         ///
-        /// </remarks>
+        /// </summary>
         /// <response code="200">login ok</response>
         /// <response code="401">unautherized</response>            
         [ProducesResponseType(StatusCodes.Status200OK)]
