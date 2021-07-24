@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Npgsql;
 
 namespace LinkShorter.Controllers
@@ -33,7 +34,14 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult Login([FromBody] LoginData loginData)
         {
-            if (!CheckIfUsernameExists(loginData.Username)) return StatusCode(404, "json: user not found lul");
+            var response = new JObject();
+            if (!CheckIfUsernameExists(loginData.Username))
+            {
+                response["status"] = "error";
+                response["data"] = JObject.FromObject(new {message = "user does not exits"});
+                return StatusCode(404, response);
+            }
+
             // validate password
             // get salt
             var sqlQuerySalt = @$"SELECT salt, password, id FROM users WHERE username = '{loginData.Username}';";
@@ -57,11 +65,19 @@ namespace LinkShorter.Controllers
             {
                 // set cookies
                 Response.Cookies.Append("session", _sessionManager.Register(userid));
-                return StatusCode(200, "json: login succeeded");
+
+
+                response["status"] = "success";
+                response["data"] = JObject.FromObject(new {message = "user login was successful"});
+
+
+                return StatusCode(200, response);
             }
             else
             {
-                return StatusCode(401, "monkaTOS - invalid userdata");
+                response["status"] = "error";
+                response["data"] = JObject.FromObject(new {message = "password does not match"});
+                return StatusCode(401, response);
             }
         }
 
