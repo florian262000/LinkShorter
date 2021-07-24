@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="2">
+  <v-card elevation="2" height="100%">
     <v-card-title primary-title class="text-h3"> Generator </v-card-title>
     <v-card-text class="text-h4"> Enter URL </v-card-text>
     <v-container>
