@@ -37,8 +37,7 @@ namespace LinkShorter.Controllers
             var response = new JObject();
             if (!CheckIfUsernameExists(loginData.Username))
             {
-                response["status"] = "error";
-                response["data"] = JObject.FromObject(new {message = "user does not exits"});
+                response["errorMessage"] = "user does not exits";
                 return StatusCode(404, response.ToString());
             }
 
@@ -67,8 +66,7 @@ namespace LinkShorter.Controllers
                 Response.Cookies.Append("session", _sessionManager.Register(userid));
 
 
-                response["status"] = "success";
-                response["data"] = JObject.FromObject(new {message = "user login was successful"});
+                response["errorMessage"] = "user login was successful";
 
                 Response.Cookies.Append("session", _sessionManager.Register(userid));
                 Console.WriteLine(response.ToString());
@@ -77,8 +75,7 @@ namespace LinkShorter.Controllers
             }
             else
             {
-                response["status"] = "error";
-                response["data"] = JObject.FromObject(new {message = "password does not match"});
+                response["errorMessage"] = "password does not match";
                 return StatusCode(401, response.ToString());
             }
         }
@@ -95,15 +92,13 @@ namespace LinkShorter.Controllers
             Console.WriteLine("session: " + _sessionManager.VerifySession(session));
             if (session != null && _sessionManager.VerifySession(session))
             {
-                response["status"] = "success";
-                response["data"] = JObject.FromObject(new {message = "session still alive"});
+                response["errorMessage"] = "session still alive";
 
                 return StatusCode(200, response.ToString());
             }
             else
             {
-                response["status"] = "error";
-                response["data"] = JObject.FromObject(new {message = "session is invalid"});
+                response["errorMessage"] = "session is invalid";
                 return StatusCode(404, response.ToString());
             }
         }
@@ -122,14 +117,12 @@ namespace LinkShorter.Controllers
             if (sessionId != null && _sessionManager.VerifySession(sessionId))
             {
                 //todo change to correct name
-                response["status"] = "success";
-                response["data"] = JObject.FromObject(new {name = "Markus", message = "username"});
+                response["name"] = "Markus";
                 return StatusCode(200, response.ToString());
             }
             else
             {
-                response["status"] = "error";
-                response["data"] = JObject.FromObject(new {message = "user is not lodged in"});
+                response["errorMessage"] = "user is not lodged in";
                 return StatusCode(401, response.ToString());
             }
         }
@@ -146,8 +139,7 @@ namespace LinkShorter.Controllers
 
             if (CheckIfUsernameExists(loginData.Username))
             {
-                response["status"] = "error";
-                response["data"] = JObject.FromObject(new {message = "username already in use, try another one"});
+                response["errorMessage"] = "username already in use, try another one";
                 return StatusCode(409, response.ToString());
             }
 
@@ -177,8 +169,7 @@ namespace LinkShorter.Controllers
 
             Response.Cookies.Append("session", _sessionManager.Register(result.ToString()));
 
-            response["status"] = "success";
-            response["data"] = JObject.FromObject(new {message = "login successful"});
+            response["message"] = "login successful";
             return StatusCode(200, response.ToString());
         }
 
