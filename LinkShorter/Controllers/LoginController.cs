@@ -29,7 +29,7 @@ namespace LinkShorter.Controllers
         [HttpPost]
         [Route("login")]
         /// <response code="200">login ok</response>
-        /// <response code="401">invalid userdata</response>            
+        /// <response code="401">invalid userdata</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult Login([FromBody] LoginData loginData)
@@ -116,8 +116,20 @@ namespace LinkShorter.Controllers
             Request.Cookies.TryGetValue("session", out var sessionId);
             if (sessionId != null && _sessionManager.VerifySession(sessionId))
             {
+                var userId = _sessionManager.GetUserFromSessionId(sessionId);
+
+                Console.WriteLine(userId);
+
+                var sqlQueryUserName = @$"SELECT username FROM users WHERE id = '{userId}';";
+                var sqlResult = new NpgsqlCommand(sqlQueryUserName, _databaseWrapper.GetDatabaseConnection());
+                var result = sqlResult.ExecuteReader();
+
+                result.Read();
+
+                var username = result.GetString(0);
+                result.Close();
                 //todo change to correct name
-                response["name"] = "Markus";
+                response["name"] = username;
                 return StatusCode(200, response.ToString());
             }
             else
