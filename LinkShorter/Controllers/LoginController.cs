@@ -191,9 +191,11 @@ namespace LinkShorter.Controllers
             var checkDuplicates = @$"SELECT username FROM users WHERE username = '{username}' LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
 
-            var duplicates = cmdCheckDuplicates.ExecuteScalar();
+            var duplicates = cmdCheckDuplicates.ExecuteReader();
 
-            return duplicates != null;
+            var val = duplicates.Read();
+            duplicates.Close();
+            return val;
         }
 
         private bool CheckIfDuplicateApikeyExists(string apikey)
@@ -201,9 +203,11 @@ namespace LinkShorter.Controllers
             var checkDuplicates = @$"SELECT apikey FROM users WHERE apikey = '{apikey}' LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
 
-            var duplicates = cmdCheckDuplicates.ExecuteScalar();
+            var duplicates = cmdCheckDuplicates.ExecuteReader();
+            var val = duplicates.Read();
+            duplicates.Close();
 
-            return duplicates != null;
+            return val;
         }
     }
 }
