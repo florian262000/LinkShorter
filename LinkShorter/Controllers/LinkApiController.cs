@@ -31,6 +31,13 @@ namespace LinkShorter.Controllers
         //todo short link: min:4 max 64
         [HttpPost]
         [Route("add")]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "shortpath": "SHORT_PATH"
+        ///     }
+        ///
+        /// </summary>
         /// <response code="200">login ok</response>
         /// <response code="401">invalid userdata</response>            
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -93,9 +100,6 @@ namespace LinkShorter.Controllers
                 }
             }
 
-            //test123
-
-
             Console.WriteLine(linkAddApiPost.TargetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
             VALUES (DEFAULT,'{linkAddApiPost.TargetUrl}', '{linkAddApiPost.ShortPath.ToLower()}', 0, DEFAULT, '{userId}');";
@@ -111,6 +115,13 @@ namespace LinkShorter.Controllers
 
         [HttpGet]
         [Route("getuniqueshortpath")]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "randomShortPath": "SHORT_PATH"
+        ///     }
+        ///
+        /// </summary>
         /// <response code="200">short path</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetUniqueShortPath()
@@ -127,7 +138,7 @@ namespace LinkShorter.Controllers
         /// <summary>
         /// Sample request:
         ///
-        ///     GET
+        ///     response model 
         ///     {
         ///         [
         ///                 {

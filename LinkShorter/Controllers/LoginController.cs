@@ -52,7 +52,6 @@ namespace LinkShorter.Controllers
             var salt = result.GetString(0);
             var password = result.GetString(1);
             var userid = result.GetGuid(2).ToString();
-            // hash
             result.Close();
             Console.WriteLine("uuid:" + userid);
 
@@ -64,10 +63,7 @@ namespace LinkShorter.Controllers
             {
                 // set cookies
                 Response.Cookies.Append("session", _sessionManager.Register(userid));
-
-
-                response["errorMessage"] = "user login was successful";
-
+                
                 Response.Cookies.Append("session", _sessionManager.Register(userid));
                 Console.WriteLine(response.ToString());
 
@@ -92,7 +88,7 @@ namespace LinkShorter.Controllers
             Console.WriteLine("session: " + _sessionManager.VerifySession(session));
             if (session != null && _sessionManager.VerifySession(session))
             {
-                response["errorMessage"] = "session still alive";
+                response["message"] = "session still alive";
 
                 return StatusCode(200, response.ToString());
             }
@@ -105,6 +101,13 @@ namespace LinkShorter.Controllers
 
         [Route("getusername")]
         [HttpPost]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "name": "USERNAME"
+        ///     }
+        ///
+        /// </summary>
         /// <response code="401">conflict </response>
         /// <response code="200">reg successfull</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -128,7 +131,6 @@ namespace LinkShorter.Controllers
 
                 var username = result.GetString(0);
                 result.Close();
-                //todo change to correct name
                 response["name"] = username;
                 return StatusCode(200, response.ToString());
             }
@@ -181,7 +183,6 @@ namespace LinkShorter.Controllers
 
             Response.Cookies.Append("session", _sessionManager.Register(result.ToString()));
 
-            response["message"] = "login successful";
             return StatusCode(200, response.ToString());
         }
 
