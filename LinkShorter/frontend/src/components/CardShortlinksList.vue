@@ -2,7 +2,7 @@
   <v-card elevation="2" height="100%">
     <v-card-title primary-title class="text-h3"> Shortlinks </v-card-title>
     <v-card-text v-if="$store.state.shortlinks.length">
-      <v-list v-for="userShortlink in $store.state.shortlinks" :key="userShortlink.id">
+      <v-list v-for="(userShortlink, index) in $store.state.shortlinks" :key="index">
         <container-link :userShortlink="userShortlink" />
       </v-list>
     </v-card-text>

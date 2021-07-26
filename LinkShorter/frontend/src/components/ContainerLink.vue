@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <a target="_blank" :href="`/${userShortlink.ShortPath}`">
+    <a target="_blank" :href="`${$domainName}/${userShortlink.ShortPath}`">
       <h1>{{ `${$domainName}/${userShortlink.ShortPath}` }}</h1>
     </a>
     <br />
