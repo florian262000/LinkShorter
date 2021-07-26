@@ -27,6 +27,9 @@ extend("url", (v: string) => {
 // Localization for vee-validate
 localize("en", en);
 
+// Get current domain name
+Vue.prototype.$domainName = window.location.origin;
+
 Vue.use(VueCookies);
 
 Vue.config.productionTip = false;

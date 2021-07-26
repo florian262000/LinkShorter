@@ -1,12 +1,14 @@
 <template>
   <v-container>
-    <h1>{{ $route.query.page + userShortlink.targetUrl }}</h1>
+    <a target="_blank" :href="`/${userShortlink.ShortPath}`">
+      <h1>{{ `${$domainName}/${userShortlink.ShortPath}` }}</h1>
+    </a>
     <br />
-    <h2>Links to: {{ userShortlink.targetUrl }}</h2>
+    <h2>Links to: {{ userShortlink.TargetUrl }}</h2>
     <br />
-    <h2>Used {{ userShortlink.clickCounter }} times</h2>
+    <h2>Used {{ userShortlink.ClickCounter }} times</h2>
     <br />
-    <h2>Created at {{ userShortlink.timeStamp }}</h2>
+    <h2>Created at {{ userShortlink.TimeStamp }}</h2>
   </v-container>
 </template>
 
@@ -24,4 +26,16 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+/* unvisited link */
+a:link,
+a:visited {
+  color: grey;
+  text-decoration: none;
+}
+
+/* mouse over link */
+a:hover {
+  color: dodgerblue;
+}
+</style>

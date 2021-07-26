@@ -1,8 +1,8 @@
 export default interface UserShortlink {
-  id: string;
-  shortPath: string;
-  targetUrl: string;
-  clickCounter: number;
-  timeStamp: string;
-  creatorId: string;
+  Id: string;
+  ShortPath: string;
+  TargetUrl: string;
+  ClickCounter: number;
+  TimeStamp: string;
+  CreatorId: string;
 }

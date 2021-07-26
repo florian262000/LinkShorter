@@ -13,7 +13,7 @@
         <card-shortlinks-gernerator />
       </v-col>
       <v-col cols="12" md="6">
-        <card-userpanel />
+        <card-shortlinks-list />
       </v-col>
     </v-row>
   </v-container>
@@ -22,11 +22,10 @@
 <script lang="ts">
 import Vue from "vue";
 import CardShortlinksGernerator from "./CardShortlinksGernerator.vue";
-import CardUserpanel from "./CardShortlinksList.vue";
+import CardShortlinksList from "./CardShortlinksList.vue";
 
 export default Vue.extend({
-  // eslint-disable-next-line vue/no-unused-components
-  components: { CardShortlinksGernerator, CardUserpanel },
+  components: { CardShortlinksGernerator, CardShortlinksList },
 });
 </script>
 
