@@ -36,9 +36,9 @@ export default Vue.extend({
       }
     },
     async loadSession(): Promise<void> {
-      const session = this.$cookies.get("session");
-
       !(await this.invalidateSession()) && this.$cookies.remove("session");
+
+      const session = this.$cookies.get("session");
 
       if (session) {
         try {
@@ -70,6 +70,9 @@ export default Vue.extend({
       return data;
     },
     async invalidateSession(): Promise<boolean> {
+      if (!this.$cookies.get("session")) {
+        return false;
+      }
       try {
         const response = await axios.post(`api/login/validatesession/${this.$cookies.get("session")}`);
 
