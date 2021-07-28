@@ -37,6 +37,9 @@ export default Vue.extend({
     },
     async loadSession(): Promise<void> {
       const session = this.$cookies.get("session");
+
+      !(await this.invalidateSession()) && this.$cookies.remove("session");
+
       if (session) {
         try {
           const username = await this.fetchUsernameFromSession();
@@ -65,6 +68,30 @@ export default Vue.extend({
 
       const data = await response.data.name;
       return data;
+    },
+    async invalidateSession(): Promise<boolean> {
+      try {
+        const response = await axios.post(`api/login/validatesession/${this.$cookies.get("session")}`);
+
+        if (response.status !== 200) {
+          throw response;
+        }
+
+        return true;
+      } catch (e) {
+        // axios throws exception when a 404 is returned, so this has to be handled differently
+        if (e.response.status === 404) {
+          return false;
+        }
+
+        if (e.status < 500) {
+          console.log("validate session - unexpected error");
+        } else {
+          console.log("validate session - server error");
+        }
+
+        return false;
+      }
     },
   },
   data: () => ({}),
