@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <navbar />
+    <navbar @toggleDrawer="showDrawer = !showDrawer" />
+    <navside :shouldShow="showDrawer" @updateDrawer="updateDrawer" />
     <v-main>
       <home-login v-if="!$store.state.isLoggedIn" />
       <home-default v-else />
@@ -15,6 +16,7 @@ import HomeDefault from "./components/HomeDefault.vue";
 import Navbar from "./components/Navbar.vue";
 import { mapMutations } from "vuex";
 import axios from "axios";
+import Navside from "./components/Navside.vue";
 
 export default Vue.extend({
   name: "App",
@@ -23,6 +25,12 @@ export default Vue.extend({
     Navbar,
     HomeLogin,
     HomeDefault,
+    Navside,
+  },
+  data() {
+    return {
+      showDrawer: false,
+    };
   },
   mounted() {
     this.loadTheme();
@@ -96,8 +104,10 @@ export default Vue.extend({
         return false;
       }
     },
+    updateDrawer(b: boolean): void {
+      this.showDrawer = b;
+    },
   },
-  data: () => ({}),
 });
 </script>
 
