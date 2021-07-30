@@ -225,7 +225,7 @@ namespace LinkShorter.Controllers
 
 
         [Route("getapikey")]
-        [HttpPost]
+        [HttpGet]
         /// <summary>
         ///     response model 
         ///     {
