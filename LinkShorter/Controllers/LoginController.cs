@@ -186,6 +186,48 @@ namespace LinkShorter.Controllers
             return StatusCode(200, response.ToString());
         }
 
+        
+        [Route("getapikey")]
+        [HttpPost]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "apikey": "APIKEY"
+        ///     }
+        ///
+        /// </summary>
+        /// <response code="401">not authenticated</response>
+        /// <response code="200">sends back the apikey for the user</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult GetApiKey()
+        {
+            var response = new JObject();
+
+            Request.Cookies.TryGetValue("session", out var sessionId);
+            if (sessionId != null && _sessionManager.VerifySession(sessionId))
+            {
+                var userId = _sessionManager.GetUserFromSessionId(sessionId);
+
+                Console.WriteLine(userId);
+
+                var sqlQueryUserName = @$"SELECT apikey FROM users WHERE id = '{userId}';";
+                var sqlResult = new NpgsqlCommand(sqlQueryUserName, _databaseWrapper.GetDatabaseConnection());
+                var result = sqlResult.ExecuteReader();
+
+                result.Read();
+
+                var username = result.GetString(0);
+                result.Close();
+                response["apikey"] = username;
+                return StatusCode(200, response.ToString());
+            }
+            else
+            {
+                response["errorMessage"] = "user is not lodged in";
+                return StatusCode(401, response.ToString());
+            }
+        }
 
         private bool CheckIfUsernameExists(string username)
         {
