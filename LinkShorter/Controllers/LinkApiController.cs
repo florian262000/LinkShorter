@@ -159,7 +159,7 @@ namespace LinkShorter.Controllers
             var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
             query.ExecuteNonQuery();
 
-            return StatusCode(200, "");
+            return StatusCode(200, response.ToString());
         }
 
         [HttpGet]
