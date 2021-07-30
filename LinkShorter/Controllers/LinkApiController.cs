@@ -113,7 +113,7 @@ namespace LinkShorter.Controllers
             return StatusCode(200, response.ToString());
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("add")]
         /// <summary>
         ///     response model 

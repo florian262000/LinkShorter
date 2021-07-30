@@ -10,14 +10,14 @@ namespace LinkShorter.Controllers
 {
     [Controller]
     [Route("/api/login")]
-    public class LoginController : ControllerBase
+    public class UserController : ControllerBase
     {
         private DatabaseWrapper _databaseWrapper;
         private PasswordManager _passwordManager;
         private readonly StringGenerator _stringGenerator;
         private readonly SessionManager _sessionManager;
 
-        public LoginController(DatabaseWrapper databaseWrapper, PasswordManager passwordManager,
+        public UserController(DatabaseWrapper databaseWrapper, PasswordManager passwordManager,
             StringGenerator stringGenerator, SessionManager sessionManager)
         {
             this._databaseWrapper = databaseWrapper;
