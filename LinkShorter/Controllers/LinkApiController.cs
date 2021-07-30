@@ -113,6 +113,55 @@ namespace LinkShorter.Controllers
             return StatusCode(200, response.ToString());
         }
 
+        [HttpPost]
+        [Route("add")]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "shortpath": "SHORT_PATH"
+        ///     }
+        ///
+        /// </summary>
+        /// <response code="200">removed successfully</response>
+        /// <response code="401">invalid auth</response>            
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult Remove([FromBody] LinkApiRemove linkApiRemove)
+        {
+            Request.Headers.TryGetValue("x-api-key", out var apikey);
+            Request.Cookies.TryGetValue("session", out var session);
+
+            var response = new JObject();
+
+            string userId;
+            if (!apikey.ToString().Equals(""))
+            {
+                var queryUserId = @$"SELECT id FROM users WHERE apikey = '{apikey}';";
+                var cmdUserId = new NpgsqlCommand(queryUserId, _databaseWrapper.GetDatabaseConnection());
+
+                userId = cmdUserId.ExecuteScalar()?.ToString();
+                cmdUserId.Connection?.Close();
+            }
+            else
+            {
+                userId = _sessionManager.GetUserFromSessionId(session);
+            }
+
+
+            if (userId == null)
+            {
+                response["errorMessage"] = "auth is invalid";
+                return StatusCode(401, response.ToString());
+            }
+
+            var sqlQuery =
+                @$"DELETE FROM links WHERE creatoruuid = '{userId}' AND shortpath = '{linkApiRemove.ShortPath}';";
+            var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
+            query.ExecuteNonQuery();
+
+            return StatusCode(200, "");
+        }
+
         [HttpGet]
         [Route("getuniqueshortpath")]
         /// <summary>
