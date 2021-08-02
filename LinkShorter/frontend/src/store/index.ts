@@ -42,5 +42,8 @@ export default new Vuex.Store({
     getUsername: (state) => {
       return state.username;
     },
+    getShortlinks: (state) => {
+      return state.shortlinks;
+    },
   },
 });
