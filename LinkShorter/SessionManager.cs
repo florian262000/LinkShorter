@@ -7,7 +7,7 @@ namespace LinkShorter
     public class SessionManager
     {
         private readonly StringGenerator _stringGenerator;
-        private readonly Dictionary<string, string> map = new();
+        private readonly Dictionary<string, string> map = new Dictionary<string, string>();
 
         public SessionManager(StringGenerator stringGenerator)
         {
