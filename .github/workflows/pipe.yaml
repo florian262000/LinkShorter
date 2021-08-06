@@ -1,4 +1,4 @@
-name: deploy
+name: .pipe
 
 on:
   push:
@@ -16,21 +16,27 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.409
+        dotnet-version: 3.1.301
     - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet publish -c Release
+    - uses: actions/setup-node@v2.1.4 
+    - name: build vue
       run: |
-        dotnet restore
-        dotnet publish -c Release
-        pwd
-    - uses: actions/checkout@v2
-    - uses: borales/actions-yarn@v2.3.0
-    - name: stelz
-      run: |
-        cd /home/runner/work/LinkShorter/LinkShorter/LinkShorter/frontend
-        yarn install 
-        yarn build
-        ls -la ..
-        
-    
-
-
+        cd frontend 
+        npm install
+        npm run build
+        mv dist ../bin/Release/netcoreapp3.1/publish/clientapp/dist
+        mkdir ../bin/Release/netcoreapp3.1/publish/assets
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Build
+      uses: docker/build-push-action@v2
+      with:
+          push: false
+          load: true
+          context: .
+          file: ./Dockerfile
+          tags: test/test:latest
+   
