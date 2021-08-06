@@ -23,7 +23,6 @@ namespace LinkShorter
 
         public string GetUserFromSessionId(string sessionId)
         {
-
             _map.TryGetValue(sessionId, out var userid);
             return userid;
         }
@@ -31,6 +30,11 @@ namespace LinkShorter
         public bool VerifySession(string sessionId)
         {
             return GetUserFromSessionId(sessionId) != null;
+        }
+
+        public bool RemoveSession(string sessionId)
+        {
+            return _map.Remove(sessionId);
         }
 
 
