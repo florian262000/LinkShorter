@@ -3,10 +3,10 @@ name: deploy
 on:
   push:
     branches:
-      - frontend
+      - master
   pull_request:
     branches:
-      - frontend
+      - master
 
 jobs:
   build:
@@ -16,19 +16,20 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
+        dotnet-version: 3.1.409
     - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet publish -c Release
+      run: |
+        dotnet restore
+        dotnet publish -c Release
+        pwd
     - uses: actions/checkout@v2
     - uses: borales/actions-yarn@v2.3.0
     - name: stelz
       run: |
         cd /home/runner/work/LinkShorter/LinkShorter/LinkShorter/frontend
-        yarn intall 
+        yarn install 
         yarn build
-        
+        ls -la ..
         
     
 
