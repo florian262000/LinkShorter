@@ -23,13 +23,13 @@ jobs:
       run: dotnet publish -c Release
     - uses: actions/checkout@v2
     - uses: borales/actions-yarn@v2.3.0
-      with:
-        cmd: install # will run `yarn install` command
-    - uses: borales/actions-yarn@v2.3.0
-      with:
-        cmd: build # will run `yarn build` command
-    - uses: borales/actions-yarn@v2.3.0
-      with:
-        cmd: test # will run `yarn test` command
+    - name: stelz
+      run: |
+        cd frontend
+        yarn intall 
+        yarn build
+        
+        
+    
 
 
