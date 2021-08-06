@@ -6,7 +6,9 @@
           <h1>{{ `${$domainName}/${userShortlink.ShortPath}` }}</h1>
         </a>
         <br />
-        <h2>Links to: {{ userShortlink.TargetUrl }}</h2>
+        <h2>
+          Links to: <a target="_blank" :href="userShortlink.TargetUrl"> {{ userShortlink.TargetUrl }} </a>
+        </h2>
         <br />
         <h2>Used {{ userShortlink.ClickCounter }} times</h2>
         <br />

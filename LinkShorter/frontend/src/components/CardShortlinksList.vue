@@ -4,6 +4,7 @@
     <v-card-text v-if="$store.state.shortlinks.length">
       <v-list v-for="(userShortlink, index) in $store.state.shortlinks" :key="index">
         <container-link :userShortlink="userShortlink" />
+        <v-divider v-if="index !== $store.state.shortlinks.length - 1"></v-divider>
       </v-list>
     </v-card-text>
   </v-card>
