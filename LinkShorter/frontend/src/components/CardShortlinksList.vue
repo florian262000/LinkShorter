@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="2" max-height="70vh">
+  <v-card elevation="2" height="100%">
     <v-card-title primary-title class="text-h3"> Shortlinks </v-card-title>
     <v-card-text v-if="$store.state.shortlinks.length">
       <v-list v-for="(userShortlink, index) in $store.state.shortlinks" :key="index">
@@ -49,6 +49,7 @@ export default Vue.extend({
 
 .v-card__text {
   flex-grow: 1;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden !important;
 }
 </style>

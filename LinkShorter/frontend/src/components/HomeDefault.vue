@@ -8,11 +8,11 @@
         </h1>
       </v-col>
     </v-row>
-    <v-row justify="center" style="max-height: 100vh">
-      <v-col cols="12" md="6" align-self="stretch">
+    <v-row justify="center" align-content="start" style="max-height: 70vh; height: 70vh">
+      <v-col cols="12" md="6" style="max-height: 100%; height: 100%">
         <card-shortlinks-gernerator />
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="6" style="max-height: 100%; height: 100%">
         <card-shortlinks-list />
       </v-col>
     </v-row>
