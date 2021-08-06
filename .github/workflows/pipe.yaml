@@ -27,6 +27,7 @@ jobs:
     - name: stelz
       run: |
         cd /home/runner/work/LinkShorter/LinkShorter/LinkShorter/frontend
+        export NODE_ENV=dev
         yarn install 
         yarn build
         ls -la ..
