@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 
@@ -36,32 +37,28 @@ export default Vue.extend({
     };
   },
   methods: {
+    ...mapGetters(["getShortlinks"]),
+    ...mapActions(["fetchShortlinks"]),
     async submit(): Promise<void> {
-      if (this.userShortlink.length) {
-        try {
-          const response = await axios.post(
-            "api/link/add",
-            {
-              targetUrl: this.url,
-              shortPath: this.userShortlink,
-            },
-            {
-              withCredentials: true,
-            }
-          );
-
-          if (response.status !== 200) {
-            throw response;
+      try {
+        const response = await axios.post(
+          "api/link/add",
+          {
+            targetUrl: this.url,
+            shortPath: this.userShortlink ? this.userShortlink : null,
+          },
+          {
+            withCredentials: true,
           }
+        );
 
-          const data = await response.data;
-
-          console.log(`data is: ${data}`);
-        } catch (e) {
-          console.log(e);
+        if (response.status !== 200) {
+          throw response;
         }
-      } else {
-        //lmao
+
+        await this.fetchShortlinks();
+      } catch (e) {
+        console.log(e);
       }
     },
   },
