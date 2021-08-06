@@ -26,7 +26,7 @@ jobs:
     - name: stelz
       run: |
         cd /home/runner/work/LinkShorter/LinkShorter/LinkShorter/frontend
-        yarn intall 
+        yarn install 
         yarn build
         
         
