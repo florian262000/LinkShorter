@@ -78,6 +78,31 @@ namespace LinkShorter.Controllers
 
 
         [HttpDelete]
+        [Route("logout")]
+        /// <response code="200">logout</response>
+        /// <response code="401">invalid userdata</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult Logout()
+        {
+            var response = new JObject();
+
+            Request.Cookies.TryGetValue("session", out var sessionId);
+            if (!_sessionManager.VerifySession(sessionId))
+            {
+                response["errorMessage"] = "user is not logged in";
+
+                return StatusCode(401, response);
+            }
+
+            response["logoutSuccessful"] = _sessionManager.RemoveSession(sessionId);
+
+
+            return StatusCode(200, response.ToString());
+        }
+
+
+        [HttpDelete]
         [Route("removeAccount")]
         /// <response code="200">account removed</response>
         /// <response code="401">invalid userdata</response>
