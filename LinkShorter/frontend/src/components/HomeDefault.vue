@@ -8,7 +8,7 @@
         </h1>
       </v-col>
     </v-row>
-    <v-row justify="center" class="fill-height">
+    <v-row justify="center" style="max-height: 100vh">
       <v-col cols="12" md="6" align-self="stretch">
         <card-shortlinks-gernerator />
       </v-col>
