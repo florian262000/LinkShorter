@@ -30,7 +30,7 @@ jobs:
         export NODE_ENV=dev
         yarn install 
         yarn build
-        ls -la ..
+        ls -la /home/runner/work/LinkShorter/LinkShorter/LinkShorter/bin/Release/netcoreapp3.1/publish/
         
     
 
