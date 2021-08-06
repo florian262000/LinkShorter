@@ -28,9 +28,8 @@ jobs:
         cd /home/runner/work/LinkShorter/LinkShorter/LinkShorter/frontend
         yarn install 
         yarn build
-        cd ../../..
-        pwd
-        find         
+        ls -la bin/Release/netcoreapp3.1/publish
+        ls -la dist
         
     
 
