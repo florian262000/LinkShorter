@@ -1,0 +1,35 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - frontend
+  pull_request:
+    branches:
+      - frontend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet publish -c Release
+    - uses: actions/checkout@v2
+    - uses: borales/actions-yarn@v2.3.0
+    - name: stelz
+      run: |
+        cd frontend
+        yarn intall 
+        yarn build
+        
+        
+    
+
+
