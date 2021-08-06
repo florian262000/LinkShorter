@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ frontend ]
+    branches: [ master ]
   pull_request:
-    branches: [ frontend ]
+    branches: [ master ]
 
 jobs:
   build:
