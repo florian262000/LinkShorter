@@ -28,8 +28,9 @@ jobs:
         cd /home/runner/work/LinkShorter/LinkShorter/LinkShorter/frontend
         yarn install 
         yarn build
-        find ../../
-        
+        cd ../../..
+        pwd
+        find         
         
     
 
