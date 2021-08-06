@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Npgsql;
 
 namespace LinkShorter.Controllers
@@ -26,11 +27,17 @@ namespace LinkShorter.Controllers
             this._sessionManager = sessionManager;
         }
 
-        
-        
+
         //todo short link: min:4 max 64
         [HttpPost]
         [Route("add")]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "shortpath": "SHORT_PATH"
+        ///     }
+        ///
+        /// </summary>
         /// <response code="200">login ok</response>
         /// <response code="401">invalid userdata</response>            
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,6 +47,7 @@ namespace LinkShorter.Controllers
             Request.Headers.TryGetValue("x-api-key", out var apikey);
             Request.Cookies.TryGetValue("session", out var session);
 
+            var response = new JObject();
 
             string userId;
             if (!apikey.ToString().Equals(""))
@@ -55,14 +63,25 @@ namespace LinkShorter.Controllers
                 userId = _sessionManager.GetUserFromSessionId(session);
             }
 
-            if (userId == null) return Unauthorized("auth is invalid");
+
+            if (userId == null)
+            {
+                response["errorMessage"] = "auth is invalid";
+                return StatusCode(401, response.ToString());
+            }
 
 
             if (linkAddApiPost.ShortPath != null && linkAddApiPost.ShortPath.StartsWith("api"))
-                return Conflict("shortPath does not start with 'api'");
-            if (!(linkAddApiPost.TargetUrl.StartsWith("http://") || linkAddApiPost.TargetUrl.StartsWith("https://")))
-                return BadRequest("The target url must start with http:// or https://");
+            {
+                response["errorMessage"] = "shortPath does not start with 'api'";
+                return StatusCode(409, response.ToString());
+            }
 
+            if (!(linkAddApiPost.TargetUrl.StartsWith("http://") || linkAddApiPost.TargetUrl.StartsWith("https://")))
+            {
+                response["errorMessage"] = "The target url must start with http:// or https://";
+                return StatusCode(400, response.ToString());
+            }
 
             // generate shortPath and set
 
@@ -76,12 +95,10 @@ namespace LinkShorter.Controllers
             {
                 if (CheckIfDuplicateExists(linkAddApiPost.ShortPath))
                 {
-                    return Conflict("shortpath already in use");
+                    response["errorMessage"] = "shortpath already in use";
+                    return StatusCode(409, response.ToString());
                 }
             }
-
-            //test123
-
 
             Console.WriteLine(linkAddApiPost.TargetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
@@ -91,16 +108,77 @@ namespace LinkShorter.Controllers
             cmd.ExecuteScalar();
 
             var shortUrl = "" + _config.Get()["urlbase"] + "/" + linkAddApiPost.ShortPath;
-            return Ok(shortUrl);
+            response["shortpath"] = shortUrl;
+
+            return StatusCode(200, response.ToString());
+        }
+
+        [HttpDelete]
+        [Route("add")]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "shortpath": "SHORT_PATH"
+        ///     }
+        ///
+        /// </summary>
+        /// <response code="200">removed successfully</response>
+        /// <response code="401">invalid auth</response>            
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult Remove([FromBody] LinkApiRemove linkApiRemove)
+        {
+            Request.Headers.TryGetValue("x-api-key", out var apikey);
+            Request.Cookies.TryGetValue("session", out var session);
+
+            var response = new JObject();
+
+            string userId;
+            if (!apikey.ToString().Equals(""))
+            {
+                var queryUserId = @$"SELECT id FROM users WHERE apikey = '{apikey}';";
+                var cmdUserId = new NpgsqlCommand(queryUserId, _databaseWrapper.GetDatabaseConnection());
+
+                userId = cmdUserId.ExecuteScalar()?.ToString();
+                cmdUserId.Connection?.Close();
+            }
+            else
+            {
+                userId = _sessionManager.GetUserFromSessionId(session);
+            }
+
+
+            if (userId == null)
+            {
+                response["errorMessage"] = "auth is invalid";
+                return StatusCode(401, response.ToString());
+            }
+
+            var sqlQuery =
+                @$"DELETE FROM links WHERE creatoruuid = '{userId}' AND shortpath = '{linkApiRemove.ShortPath}';";
+            var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
+            query.ExecuteNonQuery();
+
+            return StatusCode(200, response.ToString());
         }
 
         [HttpGet]
         [Route("getuniqueshortpath")]
+        /// <summary>
+        ///     response model 
+        ///     {
+        ///        "randomShortPath": "SHORT_PATH"
+        ///     }
+        ///
+        /// </summary>
         /// <response code="200">short path</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public string GetUniqueShortPath()
+        public IActionResult GetUniqueShortPath()
         {
-            return GenerateUniqueShortPath();
+            var response = new JObject();
+            response["randomShortPath"] = GenerateUniqueShortPath();
+
+            return StatusCode(200, response.ToString());
         }
 
 
@@ -109,7 +187,7 @@ namespace LinkShorter.Controllers
         /// <summary>
         /// Sample request:
         ///
-        ///     GET
+        ///     response model 
         ///     {
         ///         [
         ///                 {
@@ -130,11 +208,22 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetUserSpecificLinks()
         {
+            var response = new JObject();
+
             Request.Cookies.TryGetValue("session", out var session);
-            if (session == null) return Unauthorized();
+            if (session == null)
+            {
+                response["errorMessage"] = "Unauthorized";
+                return StatusCode(401, response.ToString());
+            }
 
             var userId = _sessionManager.GetUserFromSessionId(session);
-            if (userId == null) return Unauthorized();
+            if (userId == null)
+            {
+                response["errorMessage"] = "Unauthorized";
+                return StatusCode(401, response.ToString());
+            }
+
 
             var links = new List<LinkData>();
 
@@ -143,7 +232,6 @@ namespace LinkShorter.Controllers
             var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
             var result = query.ExecuteReader();
 
-            Console.WriteLine("#################################");
             while (result.Read())
             {
                 var linkData = new LinkData()
@@ -161,13 +249,10 @@ namespace LinkShorter.Controllers
                 links.Add(linkData);
             }
 
-
-            Console.WriteLine("#################################");
-
             result.Close();
 
-            Console.WriteLine(JsonConvert.SerializeObject(links));
-            return Ok(JsonConvert.SerializeObject(links));
+            var jsonArray = JsonConvert.SerializeObject(links);
+            return StatusCode(200, jsonArray);
         }
 
 

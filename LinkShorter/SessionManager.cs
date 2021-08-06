@@ -7,7 +7,7 @@ namespace LinkShorter
     public class SessionManager
     {
         private readonly StringGenerator _stringGenerator;
-        private readonly Dictionary<string, string> map = new();
+        private readonly Dictionary<string, string> map = new Dictionary<string, string>();
 
         public SessionManager(StringGenerator stringGenerator)
         {
@@ -23,7 +23,6 @@ namespace LinkShorter
 
         public string GetUserFromSessionId(string sessionId)
         {
-
             map.TryGetValue(sessionId, out var userid);
             return userid;
         }
@@ -31,6 +30,11 @@ namespace LinkShorter
         public bool VerifySession(string sessionId)
         {
             return GetUserFromSessionId(sessionId) != null;
+        }
+
+        public bool RemoveSession(string sessionId)
+        {
+            return map.Remove(sessionId);
         }
 
 

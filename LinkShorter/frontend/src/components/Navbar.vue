@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app flat dark>
-    <v-btn @click="toggleDarkTheme()" icon>
-      <v-icon>mdi-theme-light-dark</v-icon>
+    <v-btn @click.stop="$emit('toggleDrawer')" icon>
+      <v-icon>mdi-cog</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
     <v-app-bar-title> <div class="text-center text-h3">LinkShorter</div> </v-app-bar-title>
@@ -15,14 +15,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-export default Vue.extend({
-  methods: {
-    toggleDarkTheme(): void {
-      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-      localStorage.darkTheme = this.$vuetify.theme.dark;
-    },
-  },
-});
+export default Vue.extend({});
 </script>
 
 <style scoped></style>
