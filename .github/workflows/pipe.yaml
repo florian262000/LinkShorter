@@ -26,6 +26,7 @@ jobs:
     - uses: borales/actions-yarn@v2.3.0
     - name: stelz
       run: |
+        pwd
         cd /home/runner/work/LinkShorter/LinkShorter/LinkShorter/frontend
         export NODE_ENV=dev
         yarn install 
