@@ -40,5 +40,5 @@ jobs:
           load: true
           context: .
           file: ./Dockerfile
-          tags: florian262000/LinkShorter:latest
+          tags: florian262000/linkshorter:latest
    
