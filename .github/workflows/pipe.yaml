@@ -25,8 +25,9 @@ jobs:
     - name: build vue
       run: |
         export NODE_ENV=dev
+        cd LinkShorter
         ls -la
-        cd LinkShorter/frontend 
+        cd frontend
         npm install
         npm run build
         mv dist ../bin/Release/netcoreapp3.1/publish/clientapp/dist
