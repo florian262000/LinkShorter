@@ -38,7 +38,7 @@ jobs:
       with:
           push: false
           load: true
-          context: LinkShorter
+          context: .
           file: ./Dockerfile
           tags: test/test:latest
    
