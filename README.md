@@ -17,7 +17,7 @@ services:
       - database_name=linkshorter
       - urlbase=http://stelz.de
       - password_pepper=31jHVOEh4tgK2PeQ1R4z7n93lYOSQQvxOSOPbqPRHoOtriu17PX1K2zppMko
-  db:
+  database:
     container_name: linkshorter-database
     image: postgres
     restart: always
