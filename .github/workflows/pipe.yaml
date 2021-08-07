@@ -24,7 +24,8 @@ jobs:
     - uses: actions/setup-node@v2.1.4 
     - name: build vue
       run: |
-        cd frontend 
+        ls -la
+        cd LinkShorter/frontend 
         npm install
         npm run build
         mv dist ../bin/Release/netcoreapp3.1/publish/clientapp/dist
