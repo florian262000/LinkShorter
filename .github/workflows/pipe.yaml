@@ -30,8 +30,7 @@ jobs:
         cd frontend
         npm install
         npm run build
-        mv dist ../bin/Release/netcoreapp3.1/publish/clientapp/dist
-        mkdir ../bin/Release/netcoreapp3.1/publish/assets
+        mv dist bin/Release/netcoreapp3.1/publish/clientapp/dist
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Build
