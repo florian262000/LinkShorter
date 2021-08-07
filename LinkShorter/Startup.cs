@@ -34,44 +34,44 @@ namespace LinkShorter
 
             var config = JObject.Parse(File.ReadAllText("config.json"));
             //overwrite values with env vars
-            
+
             var databaseHost = Environment.GetEnvironmentVariable("database_host");
-            if (databaseHost is not null)
+            if (databaseHost != null)
             {
                 config["database"]["host"] = databaseHost;
             }
-            
+
             var databaseUsername = Environment.GetEnvironmentVariable("database_username");
-            if (databaseUsername is not null)
+            if (databaseUsername != null)
             {
                 config["database"]["username"] = databaseUsername;
             }
-            
+
             var databasePassword = Environment.GetEnvironmentVariable("database_password");
-            if (databasePassword is not null)
+            if (databasePassword != null)
             {
                 config["database"]["password"] = databasePassword;
             }
-            
+
             var databaseName = Environment.GetEnvironmentVariable("database_name");
-            if (databaseName is not null)
+            if (databaseName != null)
             {
                 config["database"]["name"] = databaseName;
             }
-            
+
             var urlBase = Environment.GetEnvironmentVariable("urlbase");
-            if (urlBase is not null)
+            if (urlBase != null)
             {
                 config["urlbase"] = urlBase;
             }
-            
+
             var passwordPepper = Environment.GetEnvironmentVariable("password_pepper");
-            if (passwordPepper is not null)
+            if (passwordPepper != null)
             {
-                config["password_pepper"]= passwordPepper;
+                config["password_pepper"] = passwordPepper;
             }
-            
-            
+
+
             var configWrapper = new ConfigWrapper(config);
             services.AddSingleton(configWrapper);
             services.AddSingleton(new DatabaseWrapper(config));
@@ -108,8 +108,7 @@ namespace LinkShorter
                     RequestPath = ""
                 });*/
             }
-            
-            
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
