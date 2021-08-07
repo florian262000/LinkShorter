@@ -6,7 +6,7 @@ version: "3.3"
 services:
   linkshorter:
     container_name: linkshorter-app
-    image: public.ecr.aws/v1e8u6g7/linkshorter
+    image: public.ecr.aws/v1e8u6g7/linkshorter:latest
     restart: always
     ports:
       - "80:80"
@@ -17,9 +17,9 @@ services:
       - database_name=linkshorter
       - urlbase=http://stelz.de
       - password_pepper=31jHVOEh4tgK2PeQ1R4z7n93lYOSQQvxOSOPbqPRHoOtriu17PX1K2zppMko
-  database:
+  db:
     container_name: linkshorter-database
-    image: postgres
+    image: public.ecr.aws/ubuntu/postgres:latest
     restart: always
     environment:
       POSTGRES_DB: linkshorter
