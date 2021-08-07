@@ -33,7 +33,7 @@ jobs:
         npm run build
         rm -r ../bin/Release/netcoreapp3.1/publish/frontend
         mkdir ../bin/Release/netcoreapp3.1/publish/frontend-serve
-        mv dist ../bin/Release/netcoreapp3.1/publish/frontend-serve
+        mv dist/* ../bin/Release/netcoreapp3.1/publish/frontend-serve
     - name: Get short SHA
       id: sha
       run: echo "::set-output name=sha7::$(echo ${GITHUB_SHA} | cut -c1-7)"
