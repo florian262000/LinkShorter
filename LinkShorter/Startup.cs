@@ -33,6 +33,45 @@ namespace LinkShorter
             services.AddControllers();
 
             var config = JObject.Parse(File.ReadAllText("config.json"));
+            //overwrite values with env vars
+            
+            var databaseHost = Environment.GetEnvironmentVariable("database_host");
+            if (databaseHost is not null)
+            {
+                config["database"]["host"] = databaseHost;
+            }
+            
+            var databaseUsername = Environment.GetEnvironmentVariable("database_username");
+            if (databaseUsername is not null)
+            {
+                config["database"]["username"] = databaseUsername;
+            }
+            
+            var databasePassword = Environment.GetEnvironmentVariable("database_password");
+            if (databasePassword is not null)
+            {
+                config["database"]["password"] = databasePassword;
+            }
+            
+            var databaseName = Environment.GetEnvironmentVariable("database_name");
+            if (databaseName is not null)
+            {
+                config["database"]["name"] = databaseName;
+            }
+            
+            var urlBase = Environment.GetEnvironmentVariable("urlbase");
+            if (urlBase is not null)
+            {
+                config["urlbase"] = urlBase;
+            }
+            
+            var passwordPepper = Environment.GetEnvironmentVariable("password_pepper");
+            if (passwordPepper is not null)
+            {
+                config["password_pepper"]= passwordPepper;
+            }
+            
+            
             var configWrapper = new ConfigWrapper(config);
             services.AddSingleton(configWrapper);
             services.AddSingleton(new DatabaseWrapper(config));
