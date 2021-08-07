@@ -28,8 +28,8 @@ jobs:
         cd LinkShorter/frontend
         npm install
         npm run build
-        ls -la ../bin
-        # mv dist bin/Release/netcoreapp3.1/publish/clientapp/dist
+        ls -la ../bin/Release/
+        mv dist bin/Release/netcoreapp3.1/publish/clientapp/dist
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Build
