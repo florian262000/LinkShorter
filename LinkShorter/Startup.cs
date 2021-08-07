@@ -38,6 +38,7 @@ namespace LinkShorter
             services.AddSingleton(new DatabaseWrapper(config));
             services.AddSwaggerGen();
             var stringGenerator = new StringGenerator();
+
             services.AddSingleton(stringGenerator);
             services.AddSingleton(pwd => new PasswordManager(stringGenerator, configWrapper));
             services.AddSingleton(SessionManager => new SessionManager(stringGenerator));
@@ -71,6 +72,8 @@ namespace LinkShorter
                     RequestPath = ""
                 });
             }
+            
+            
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -17,6 +17,11 @@ namespace LinkShorter.Controllers
         [HttpGet]
         public ActionResult Get(string shortPath)
         {
+            if (shortPath is null or "")
+            {
+                return new RedirectResult("index.html");
+            }
+
             shortPath = shortPath.ToLower();
             var queryTargetUrl =
                 @$"SELECT targeturl FROM links WHERE shortPath = '{shortPath}'; UPDATE links set clickcounter = clickcounter+1  WHERE shortPath = '{shortPath}'; ";
