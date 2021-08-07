@@ -61,13 +61,13 @@ namespace LinkShorter
             }
             else
             {
-                
-                app.UseStaticFiles(new StaticFileOptions
+                app.UseDefaultFiles();
+                /*app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new PhysicalFileProvider(
                         Path.Combine(env.ContentRootPath, "frontend-serve")),
                     RequestPath = ""
-                });
+                });*/
             }
             
             
