@@ -194,6 +194,7 @@ namespace LinkShorter.Controllers
         ///                     "Id": "",
         ///                     "TargetUrl": "",
         ///                     "ShortPath": "",
+        ///                     "FullShortUrl": "",
         ///                     "ClickCounter": "",
         ///                     "TimeStamp": "",
         ///                     "CreatorId": ""
@@ -239,13 +240,12 @@ namespace LinkShorter.Controllers
                     Id = result.GetGuid(0),
                     TargetUrl = result.GetString(1),
                     ShortPath = result.GetString(2),
+                    FullShortUrl = _config.Get()["urlbase"] + "/" + result.GetString(2),
                     ClickCounter = result.GetInt32(3),
                     TimeStamp = result.GetTimeStamp(4).ToString(),
                     CreatorId = result.GetGuid(5)
                 };
 
-                //var jsonString = JsonConvert.SerializeObject(linkData);
-                //jsonString = jsonString.Replace("\\", "");
                 links.Add(linkData);
             }
 
