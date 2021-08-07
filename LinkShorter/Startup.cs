@@ -61,10 +61,7 @@ namespace LinkShorter
             }
             else
             {
-                var options = new DefaultFilesOptions();
-                options.DefaultFileNames.Clear();
-                options.DefaultFileNames.Add("index.html");
-                app.UseDefaultFiles(options);
+                
                 app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new PhysicalFileProvider(
