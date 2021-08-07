@@ -64,7 +64,7 @@ namespace LinkShorter
                 {
                     FileProvider = new PhysicalFileProvider(
                         Path.Combine(env.ContentRootPath, "frontend-serve")),
-                    RequestPath = "/"
+                    RequestPath = ""
                 });
             }
 
