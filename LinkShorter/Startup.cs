@@ -33,9 +33,11 @@ namespace LinkShorter
             services.AddControllers();
 
             var config = JObject.Parse(File.ReadAllText("config.json"));
+
             //overwrite values with env vars
 
             var databaseHost = Environment.GetEnvironmentVariable("database_host");
+            Console.WriteLine("databseHOst: " + databaseHost);
             if (databaseHost != null)
             {
                 config["database"]["host"] = databaseHost;
