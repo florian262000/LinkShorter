@@ -96,7 +96,7 @@ namespace LinkShorter.Controllers
             }
 
             response["logoutSuccessful"] = _sessionManager.RemoveSession(sessionId);
-
+            Response.Cookies.Delete("session");
 
             return StatusCode(200, response.ToString());
         }
