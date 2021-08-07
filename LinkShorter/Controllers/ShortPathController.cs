@@ -17,10 +17,6 @@ namespace LinkShorter.Controllers
         [HttpGet]
         public ActionResult Get(string shortPath)
         {
-            if (shortPath is null or "")
-            {
-                return new RedirectResult("index.html");
-            }
 
             shortPath = shortPath.ToLower();
             var queryTargetUrl =
