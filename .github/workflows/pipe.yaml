@@ -28,7 +28,7 @@ jobs:
         cd LinkShorter/frontend
         npm install
         npm run build
-        ls -la ../bin/Release/netcoreapp3.1/publish
+        rm -r ../bin/Release/netcoreapp3.1/publish/frontend
         mkdir ../bin/Release/netcoreapp3.1/publish/frontend-serve
         mv dist ../bin/Release/netcoreapp3.1/publish/frontend-serve
     - name: Set up Docker Buildx
@@ -38,7 +38,7 @@ jobs:
       with:
           push: false
           load: true
-          context: .
+          context: Linkshorter
           file: ./Dockerfile
           tags: test/test:latest
    
