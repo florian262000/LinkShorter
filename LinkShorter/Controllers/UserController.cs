@@ -233,7 +233,7 @@ namespace LinkShorter.Controllers
 
 
             var insert =
-                @$"INSERT INTO users(id, username, password, salt, apikey) VALUES (DEFAULT,'{loginData.Username}', '{hash}', '{salt}', '{apikey}');
+                @$"INSERT INTO users(id, username, password, password_salt, apikey) VALUES (DEFAULT,'{loginData.Username}', '{hash}', '{salt}', '{apikey}');
                 SELECT id FROM users WHERE username = '{loginData.Username}';";
             var insertion = new NpgsqlCommand(insert, _databaseWrapper.GetDatabaseConnection());
             var result = insertion.ExecuteScalar();

@@ -37,7 +37,6 @@ namespace LinkShorter
             //overwrite values with env vars
 
             var databaseHost = Environment.GetEnvironmentVariable("database_host");
-            Console.WriteLine("databseHOst: " + databaseHost);
             if (databaseHost != null)
             {
                 config["database"]["host"] = databaseHost;
