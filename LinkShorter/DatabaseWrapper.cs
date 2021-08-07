@@ -26,7 +26,7 @@ namespace LinkShorter
             cmd0.ExecuteScalar();
 
             var queryCheckUserTable = @"CREATE TABLE IF NOT EXISTS users (
-                           id UUID  PRIMARY KEY UNIQUE,
+                           id UUID  PRIMARY KEY DEFAULT uuid_generate_v4() UNIQUE,
                            username text,
                            email text,
                            password text,
