@@ -29,7 +29,8 @@ jobs:
         npm install
         npm run build
         ls -la ../bin/Release/netcoreapp3.1/publish
-        # mv dist ../bin/Release/netcoreapp3.1/publish/clientapp/dist
+        mkidr ../bin/Release/netcoreapp3.1/publish/frontend-serve
+        mv dist ../bin/Release/netcoreapp3.1/publish/frontend-serve
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Build
