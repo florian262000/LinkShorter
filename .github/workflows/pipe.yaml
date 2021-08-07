@@ -25,11 +25,10 @@ jobs:
     - name: build vue
       run: |
         export NODE_ENV=dev
-        cd LinkShorter
-        ls -la
-        cd frontend
+        cd LinkShorter/frontend
         npm install
         npm run build
+        ls -la bin/Release
         mv dist bin/Release/netcoreapp3.1/publish/clientapp/dist
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
