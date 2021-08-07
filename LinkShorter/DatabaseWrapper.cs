@@ -30,7 +30,7 @@ namespace LinkShorter
                            username text,
                            email text,
                            password text,
-                           password_salt text,
+                           salt text,
                            apikey text UNIQUE
                         );";
             var cmd = new NpgsqlCommand(queryCheckUserTable, connection);
