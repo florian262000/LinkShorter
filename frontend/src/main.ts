@@ -6,6 +6,7 @@ import VueCookies from "vue-cookies";
 import { extend, localize } from "vee-validate";
 import en from "vee-validate/dist/locale/en.json";
 import * as rules from "vee-validate/dist/rules";
+import router from "./router";
 
 // Setup vee-validate ruleset
 for (const [rule, validation] of Object.entries(rules)) {
@@ -37,5 +38,6 @@ Vue.config.productionTip = false;
 new Vue({
   vuetify,
   store,
+  router,
   render: (h) => h(App),
 }).$mount("#app");
