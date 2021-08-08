@@ -5,14 +5,16 @@
         <v-icon class="pr-2">mdi-theme-light-dark</v-icon> Dark/Light Theme
       </v-list-item>
     </v-list>
-    <template v-slot:append>
-      <v-btn block tile large color="error" dark>Delete Account</v-btn>
+    <template v-if="$store.state.isLoggedIn" v-slot:append>
+      <v-btn @click="logoutUser" block tile large color="error" dark>Logout</v-btn>
     </template>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
+import axios from "axios";
 import Vue from "vue";
+import { mapMutations } from "vuex";
 
 export default Vue.extend({
   watch: {
@@ -35,9 +37,28 @@ export default Vue.extend({
     },
   },
   methods: {
+    ...mapMutations(["setIsLoggedIn", "setUsername", "setShortlinks"]),
     toggleDarkTheme(): void {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
       localStorage.darkTheme = this.$vuetify.theme.dark;
+    },
+    async logoutUser(): Promise<void> {
+      console.log("test");
+      try {
+        const response = await axios.delete("api/login/logout", { withCredentials: true });
+
+        if (response.status !== 200) {
+          throw response;
+        }
+
+        this.shouldShowData = false;
+
+        this.setIsLoggedIn(false);
+        this.setUsername("");
+        this.setShortlinks([]);
+      } catch (e) {
+        console.log(`error loggin user out - ${e}`);
+      }
     },
   },
 });
