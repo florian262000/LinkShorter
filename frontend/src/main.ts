@@ -29,6 +29,7 @@ extend("url", (v: string) => {
 localize("en", en);
 
 // Get current domain name
+// TODO: Replace with vue-router implementation
 Vue.prototype.$domainName = process.env.NODE_ENV === "production" ? window.location.origin : "https://localhost:5001";
 
 Vue.use(VueCookies);
