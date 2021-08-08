@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts">
+import router from "@/router";
 import axios from "axios";
 import Vue from "vue";
 import { mapMutations } from "vuex";
@@ -52,7 +53,7 @@ export default Vue.extend({
         }
 
         this.shouldShowData = false;
-
+        router.push("/");
         this.setIsLoggedIn(false);
         this.setUsername("");
         this.setShortlinks([]);
