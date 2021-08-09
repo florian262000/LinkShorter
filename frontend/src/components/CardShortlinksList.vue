@@ -16,7 +16,6 @@ import { mapActions } from "vuex";
 import ContainerLink from "./ContainerLink.vue";
 
 export default Vue.extend({
-  // eslint-disable-next-line vue/no-unused-components
   components: { ContainerLink },
   mounted() {
     this.loadShortlinks();

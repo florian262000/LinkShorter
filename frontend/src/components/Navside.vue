@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts">
-import router from "@/router";
 import axios from "axios";
 import Vue from "vue";
 import { mapMutations } from "vuex";

@@ -61,7 +61,7 @@ export default Vue.extend({
         }
       }
     },
-    async fetchUsernameFromSession(): Promise<any> {
+    async fetchUsernameFromSession(): Promise<string> {
       const response = await axios.post("/api/login/getusername", {}, { withCredentials: true });
 
       if (response.status !== 200) {
