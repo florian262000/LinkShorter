@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Npgsql;
 
@@ -10,13 +12,15 @@ namespace LinkShorter
 
         private static NpgsqlConnection connection;
 
+        private static string sqlLogin;
+
         public DatabaseWrapper(JObject config)
         {
             this._config = config;
-            var cs =
+            sqlLogin =
                 $"Host={config["database"]["host"]};Username={config["database"]["username"]};Password={config["database"]["password"]};Database={config["database"]["name"]}";
 
-            connection = new NpgsqlConnection(cs);
+            connection = new NpgsqlConnection(sqlLogin);
             connection.Open();
             // check (and create tables)
 
@@ -50,6 +54,19 @@ namespace LinkShorter
             var cmd1 = new NpgsqlCommand(queryCheckLinkTable, connection);
             cmd1.ExecuteScalar();
         }
+
+        public bool isConnected()
+        {
+            return (connection.State & ConnectionState.Open) != 0;
+        }
+
+        public void reconnect()
+        {
+            
+            connection = new NpgsqlConnection(sqlLogin);
+        }
+        
+        
 
         public NpgsqlConnection GetDatabaseConnection()
         {

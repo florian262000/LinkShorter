@@ -44,6 +44,10 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Add([FromBody] LinkAddApiPost linkAddApiPost)
         {
+            
+            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
+            
             Request.Headers.TryGetValue("x-api-key", out var apikey);
             Request.Cookies.TryGetValue("session", out var session);
 
@@ -128,6 +132,10 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Remove([FromBody] LinkApiRemove linkApiRemove)
         {
+            
+            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
+            
             Request.Headers.TryGetValue("x-api-key", out var apikey);
             Request.Cookies.TryGetValue("session", out var session);
 
@@ -209,6 +217,11 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetUserSpecificLinks()
         {
+            
+            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
+            
+            
             var response = new JObject();
 
             Request.Cookies.TryGetValue("session", out var session);
@@ -270,6 +283,9 @@ namespace LinkShorter.Controllers
 
         private bool CheckIfDuplicateExists(string shortPath)
         {
+            
+            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = '{shortPath}' LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
 

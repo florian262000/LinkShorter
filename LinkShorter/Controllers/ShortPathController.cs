@@ -17,6 +17,9 @@ namespace LinkShorter.Controllers
         [HttpGet]
         public ActionResult Get(string shortPath)
         {
+            
+            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
 
             shortPath = shortPath.ToLower();
             var queryTargetUrl =
