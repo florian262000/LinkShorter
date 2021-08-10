@@ -138,6 +138,48 @@ namespace LinkShorter.Controllers
             return StatusCode(200, response.ToString());
         }
 
+        [HttpPatch]
+        [Route("changepassword")]
+        /// <response code="200">password changed</response>
+        /// <response code="401">invalid userdata</response>
+        /// <summary>
+        ///     input model 
+        ///     {
+        ///        "password": "PASSWORD"
+        ///     }
+        ///
+        /// </summary>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult ChangePassword([FromBody] PasswordData passwordData)
+        {
+            var response = new JObject();
+
+            Request.Cookies.TryGetValue("session", out var sessionId);
+            if (!_sessionManager.VerifySession(sessionId))
+            {
+                response["errorMessage"] = "user is not authenticated";
+
+                return StatusCode(401, response);
+            }
+
+            var userId = _sessionManager.GetUserFromSessionId(sessionId);
+
+            var salt = _passwordManager.SaltGenerator();
+
+            var hash = _passwordManager.Hash(passwordData.Password, salt);
+
+
+            // remove all shortlinks
+            var sqlQueryLinks =
+                @$"UPDATE user SET password = {hash}, salt = {salt} WHERE'{userId}';";
+            var queryLinks = new NpgsqlCommand(sqlQueryLinks, _databaseWrapper.GetDatabaseConnection());
+            queryLinks.ExecuteNonQuery();
+
+
+            return StatusCode(200, response.ToString());
+        }
+
         [HttpPost]
         [Route("validatesession/{session}")]
         /// <response code="200">session ok</response>
@@ -202,6 +244,7 @@ namespace LinkShorter.Controllers
                 return StatusCode(401, response.ToString());
             }
         }
+
 
         [Route("register")]
         [HttpPost]
