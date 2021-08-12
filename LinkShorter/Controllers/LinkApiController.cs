@@ -28,7 +28,6 @@ namespace LinkShorter.Controllers
         }
 
 
-        //todo short link: min:4 max 64
         [HttpPost]
         [Route("add")]
         /// <summary>
@@ -39,8 +38,10 @@ namespace LinkShorter.Controllers
         ///
         /// </summary>
         /// <response code="200">login ok</response>
-        /// <response code="401">invalid userdata</response>            
+        /// <response code="401">invalid userdata</response>
+        /// <response code="400">shortpath does not match the requirements</response> 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Add([FromBody] LinkAddApiPost linkAddApiPost)
         {
@@ -75,7 +76,9 @@ namespace LinkShorter.Controllers
             }
 
 
-            if (linkAddApiPost.ShortPath != null && linkAddApiPost.ShortPath.StartsWith("api"))
+            if (linkAddApiPost.ShortPath != null 
+                && linkAddApiPost.ShortPath.StartsWith("api")
+                && linkAddApiPost.ShortPath.Length is >= 4 and <= 64)
             {
                 response["errorMessage"] = "shortPath does not start with 'api'";
                 return StatusCode(409, response.ToString());
@@ -83,7 +86,7 @@ namespace LinkShorter.Controllers
 
             if (!(linkAddApiPost.TargetUrl.StartsWith("http://") || linkAddApiPost.TargetUrl.StartsWith("https://")))
             {
-                response["errorMessage"] = "The target url must start with http:// or https://";
+                response["errorMessage"] = "The target url must start with http:// or https:// and the commited shortlink need to be at leat 4 and up to 64 characters";
                 return StatusCode(400, response.ToString());
             }
 
