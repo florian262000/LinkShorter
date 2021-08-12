@@ -162,8 +162,7 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult ChangePassword([FromBody] PasswordData passwordData)
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
             
             var response = new JObject();
 

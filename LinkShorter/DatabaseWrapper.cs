@@ -62,11 +62,9 @@ namespace LinkShorter
 
         public void reconnect()
         {
-            
             connection = new NpgsqlConnection(sqlLogin);
         }
-        
-        
+
 
         public NpgsqlConnection GetDatabaseConnection()
         {
