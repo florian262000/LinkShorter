@@ -45,10 +45,9 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Add([FromBody] LinkAddApiPost linkAddApiPost)
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
-            
+
             Request.Headers.TryGetValue("x-api-key", out var apikey);
             Request.Cookies.TryGetValue("session", out var session);
 
@@ -76,9 +75,10 @@ namespace LinkShorter.Controllers
             }
 
 
-            if (linkAddApiPost.ShortPath != null 
+            if (linkAddApiPost.ShortPath != null
                 && linkAddApiPost.ShortPath.StartsWith("api")
-                && linkAddApiPost.ShortPath.Length is >= 4 and <= 64)
+                && linkAddApiPost.ShortPath.Length >= 4
+                && linkAddApiPost.ShortPath.Length <= 64)
             {
                 response["errorMessage"] = "shortPath does not start with 'api'";
                 return StatusCode(409, response.ToString());
@@ -86,7 +86,8 @@ namespace LinkShorter.Controllers
 
             if (!(linkAddApiPost.TargetUrl.StartsWith("http://") || linkAddApiPost.TargetUrl.StartsWith("https://")))
             {
-                response["errorMessage"] = "The target url must start with http:// or https:// and the commited shortlink need to be at leat 4 and up to 64 characters";
+                response["errorMessage"] =
+                    "The target url must start with http:// or https:// and the commited shortlink need to be at leat 4 and up to 64 characters";
                 return StatusCode(400, response.ToString());
             }
 
@@ -135,10 +136,9 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Remove([FromBody] LinkApiRemove linkApiRemove)
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
-            
+
             Request.Headers.TryGetValue("x-api-key", out var apikey);
             Request.Cookies.TryGetValue("session", out var session);
 
@@ -220,11 +220,9 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetUserSpecificLinks()
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
-            
-            
+
             var response = new JObject();
 
             Request.Cookies.TryGetValue("session", out var session);
@@ -286,8 +284,7 @@ namespace LinkShorter.Controllers
 
         private bool CheckIfDuplicateExists(string shortPath)
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
             var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = '{shortPath}' LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
