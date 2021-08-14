@@ -34,9 +34,8 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult Login([FromBody] LoginData loginData)
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var response = new JObject();
             if (!CheckIfUsernameExists(loginData.Username))
             {
@@ -88,9 +87,8 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult Logout()
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var response = new JObject();
 
             Request.Cookies.TryGetValue("session", out var sessionId);
@@ -116,9 +114,8 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult RemoveAccount()
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var response = new JObject();
 
             Request.Cookies.TryGetValue("session", out var sessionId);
@@ -163,7 +160,7 @@ namespace LinkShorter.Controllers
         public ActionResult ChangePassword([FromBody] PasswordData passwordData)
         {
             if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+
             var response = new JObject();
 
             Request.Cookies.TryGetValue("session", out var sessionId);
@@ -229,9 +226,8 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult GetUserName()
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var response = new JObject();
 
             Request.Cookies.TryGetValue("session", out var sessionId);
@@ -268,9 +264,8 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult Register([FromBody] LoginData loginData)
         {
-            
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var response = new JObject();
 
             if (CheckIfUsernameExists(loginData.Username))
@@ -293,9 +288,15 @@ namespace LinkShorter.Controllers
 
 
             var insert =
-                @$"INSERT INTO users(id, username, password, salt, apikey) VALUES (DEFAULT,'{loginData.Username}', '{hash}', '{salt}', '{apikey}');
-                SELECT id FROM users WHERE username = '{loginData.Username}';";
+                @$"INSERT INTO users(id, username, password, salt, apikey) VALUES (DEFAULT, @username, @hash, @salt, @apikey);
+                SELECT id FROM users WHERE username = @username;";
             var insertion = new NpgsqlCommand(insert, _databaseWrapper.GetDatabaseConnection());
+
+            insertion.Parameters.AddWithValue("username", loginData.Username);
+            insertion.Parameters.AddWithValue("hash", hash);
+            insertion.Parameters.AddWithValue("salt", salt);
+            insertion.Parameters.AddWithValue("apikey", apikey);
+
             var result = insertion.ExecuteScalar();
 
 
@@ -324,8 +325,8 @@ namespace LinkShorter.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult GetApiKey()
         {
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var response = new JObject();
 
             Request.Cookies.TryGetValue("session", out var sessionId);
@@ -355,8 +356,8 @@ namespace LinkShorter.Controllers
 
         private bool CheckIfUsernameExists(string username)
         {
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var checkDuplicates = @$"SELECT username FROM users WHERE username = '{username}' LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
 
@@ -369,8 +370,8 @@ namespace LinkShorter.Controllers
 
         private bool CheckIfDuplicateApikeyExists(string apikey)
         {
-            if(! _databaseWrapper.isConnected()) _databaseWrapper.reconnect();
-            
+            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+
             var checkDuplicates = @$"SELECT apikey FROM users WHERE apikey = '{apikey}' LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
 
