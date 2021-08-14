@@ -8,6 +8,8 @@ services:
     container_name: linkshorter-app
     image: public.ecr.aws/v1e8u6g7/linkshorter:latest
     restart: always
+    depends_on:
+      - db
     ports:
       - "80:80"
     environment:
