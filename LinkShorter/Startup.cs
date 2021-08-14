@@ -35,7 +35,6 @@ namespace LinkShorter
             var config = JObject.Parse(File.ReadAllText("config.json"));
 
             //overwrite values with env vars
-
             var databaseHost = Environment.GetEnvironmentVariable("database_host");
             if (databaseHost != null)
             {
