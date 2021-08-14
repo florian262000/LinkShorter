@@ -31,7 +31,7 @@ jobs:
         cd frontend
         npm install
         npm run build
-        mkdir ../bin/Release/netcoreapp3.1/publish/wwwroot
+        mkdir  ../LinkShorter/bin/Release/netcoreapp3.1/publish/wwwroot
         mv dist/* ../LinkShorter/bin/Release/netcoreapp3.1/publish/wwwroot
     - name: Get short SHA
       id: sha
