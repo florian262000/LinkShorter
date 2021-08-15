@@ -45,8 +45,10 @@ namespace LinkShorter.Controllers
 
             // validate password
             // get salt
-            var sqlQuerySalt = @$"SELECT salt, password, id FROM users WHERE username = '{loginData.Username}';";
+            var sqlQuerySalt = @$"SELECT salt, password, id FROM users WHERE username = @Username;";
             var querySalt = new NpgsqlCommand(sqlQuerySalt, _databaseWrapper.GetDatabaseConnection());
+            querySalt.Parameters.AddWithValue("Username", loginData.Username);
+            querySalt.Prepare();
             var result = querySalt.ExecuteReader();
 
             result.Read();
@@ -130,15 +132,19 @@ namespace LinkShorter.Controllers
 
             // remove all shortlinks
             var sqlQueryLinks =
-                @$"DELETE FROM links WHERE creatoruuid = '{userId}';";
+                @$"DELETE FROM links WHERE creatoruuid = @userId;";
             var queryLinks = new NpgsqlCommand(sqlQueryLinks, _databaseWrapper.GetDatabaseConnection());
+            queryLinks.Parameters.AddWithValue("userId", userId);
+            queryLinks.Prepare();
             queryLinks.ExecuteNonQuery();
 
 
             // remove account
             var sqlQueryAccount =
-                @$"DELETE FROM users WHERE id = '{userId}';";
+                @$"DELETE FROM users WHERE id = @userId;";
             var query = new NpgsqlCommand(sqlQueryAccount, _databaseWrapper.GetDatabaseConnection());
+            query.Parameters.AddWithValue("userId", userId);
+            query.Prepare();
             query.ExecuteNonQuery();
 
             return StatusCode(200, response.ToString());
@@ -180,8 +186,12 @@ namespace LinkShorter.Controllers
 
             // remove all shortlinks
             var sqlQueryLinks =
-                @$"UPDATE user SET password = {hash}, salt = {salt} WHERE'{userId}';";
+                @$"UPDATE user SET password = @hash, salt = @salt WHERE @userId;";
             var queryLinks = new NpgsqlCommand(sqlQueryLinks, _databaseWrapper.GetDatabaseConnection());
+            queryLinks.Parameters.AddWithValue("hash", hash);
+            queryLinks.Parameters.AddWithValue("salt", salt);
+            queryLinks.Parameters.AddWithValue("userId", userId);
+            queryLinks.Prepare();
             queryLinks.ExecuteNonQuery();
 
 
@@ -237,8 +247,11 @@ namespace LinkShorter.Controllers
 
                 Console.WriteLine(userId);
 
-                var sqlQueryUserName = @$"SELECT username FROM users WHERE id = '{userId}';";
+                var sqlQueryUserName = @$"SELECT username FROM users WHERE id = @userId;";
                 var sqlResult = new NpgsqlCommand(sqlQueryUserName, _databaseWrapper.GetDatabaseConnection());
+                sqlResult.Parameters.AddWithValue("userId", userId);
+                sqlResult.Prepare();
+
                 var result = sqlResult.ExecuteReader();
 
                 result.Read();
@@ -297,6 +310,9 @@ namespace LinkShorter.Controllers
             insertion.Parameters.AddWithValue("salt", salt);
             insertion.Parameters.AddWithValue("apikey", apikey);
 
+            insertion.Prepare();
+
+
             var result = insertion.ExecuteScalar();
 
 
@@ -336,8 +352,10 @@ namespace LinkShorter.Controllers
 
                 Console.WriteLine(userId);
 
-                var sqlQueryUserName = @$"SELECT apikey FROM users WHERE id = '{userId}';";
+                var sqlQueryUserName = @$"SELECT apikey FROM users WHERE id = @userId;";
                 var sqlResult = new NpgsqlCommand(sqlQueryUserName, _databaseWrapper.GetDatabaseConnection());
+                sqlResult.Parameters.AddWithValue("userId", userId);
+                sqlResult.Prepare();
                 var result = sqlResult.ExecuteReader();
 
                 result.Read();
@@ -358,8 +376,11 @@ namespace LinkShorter.Controllers
         {
             if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
-            var checkDuplicates = @$"SELECT username FROM users WHERE username = '{username}' LIMIT 1;";
+            var checkDuplicates = @$"SELECT username FROM users WHERE username = @username LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
+
+            cmdCheckDuplicates.Parameters.AddWithValue("username", username);
+            cmdCheckDuplicates.Prepare();
 
             var duplicates = cmdCheckDuplicates.ExecuteReader();
 
@@ -372,8 +393,11 @@ namespace LinkShorter.Controllers
         {
             if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
-            var checkDuplicates = @$"SELECT apikey FROM users WHERE apikey = '{apikey}' LIMIT 1;";
+            var checkDuplicates = @$"SELECT apikey FROM users WHERE apikey = @apikey LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
+
+            cmdCheckDuplicates.Parameters.AddWithValue("apikey", apikey);
+            cmdCheckDuplicates.Prepare();
 
             var duplicates = cmdCheckDuplicates.ExecuteReader();
             var val = duplicates.Read();

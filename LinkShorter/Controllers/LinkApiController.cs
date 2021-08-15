@@ -56,8 +56,9 @@ namespace LinkShorter.Controllers
             string userId;
             if (!apikey.ToString().Equals(""))
             {
-                var queryUserId = @$"SELECT id FROM users WHERE apikey = '{apikey}';";
+                var queryUserId = @$"SELECT id FROM users WHERE apikey = @apikey;";
                 var cmdUserId = new NpgsqlCommand(queryUserId, _databaseWrapper.GetDatabaseConnection());
+                cmdUserId.Parameters.AddWithValue("apikey", apikey);
 
                 userId = cmdUserId.ExecuteScalar()?.ToString();
                 cmdUserId.Connection?.Close();
@@ -110,9 +111,15 @@ namespace LinkShorter.Controllers
 
             Console.WriteLine(linkAddApiPost.TargetUrl);
             var sql = @$"INSERT INTO links(id, targeturl, shortpath, clickcounter, createdat, creatoruuid)
-            VALUES (DEFAULT,'{linkAddApiPost.TargetUrl}', '{linkAddApiPost.ShortPath.ToLower()}', 0, DEFAULT, '{userId}');";
-
+            VALUES (DEFAULT, @TargetUrl, @ShortPath, 0, DEFAULT, @userId);";
             using var cmd = new NpgsqlCommand(sql, _databaseWrapper.GetDatabaseConnection());
+
+            cmd.Parameters.AddWithValue("TargetUrl", linkAddApiPost.TargetUrl);
+            cmd.Parameters.AddWithValue("ShortPath", linkAddApiPost.ShortPath.ToLower());
+            cmd.Parameters.AddWithValue("userId", userId);
+
+            cmd.Prepare();
+
             cmd.ExecuteScalar();
 
             var shortUrl = "" + _config.Get()["urlbase"] + "/" + linkAddApiPost.ShortPath;
@@ -147,8 +154,11 @@ namespace LinkShorter.Controllers
             string userId;
             if (!apikey.ToString().Equals(""))
             {
-                var queryUserId = @$"SELECT id FROM users WHERE apikey = '{apikey}';";
+                var queryUserId = @$"SELECT id FROM users WHERE apikey = @apikey;";
                 var cmdUserId = new NpgsqlCommand(queryUserId, _databaseWrapper.GetDatabaseConnection());
+
+                cmdUserId.Parameters.AddWithValue("apikey", apikey);
+                cmdUserId.Prepare();
 
                 userId = cmdUserId.ExecuteScalar()?.ToString();
                 cmdUserId.Connection?.Close();
@@ -166,8 +176,12 @@ namespace LinkShorter.Controllers
             }
 
             var sqlQuery =
-                @$"DELETE FROM links WHERE creatoruuid = '{userId}' AND shortpath = '{linkApiRemove.ShortPath}';";
+                @$"DELETE FROM links WHERE creatoruuid = @userId AND shortpath = @ShortPath;";
             var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
+            query.Parameters.AddWithValue("userId", userId);
+            query.Parameters.AddWithValue("shortpath", linkApiRemove.ShortPath);
+            query.Prepare();
+
             query.ExecuteNonQuery();
 
             return StatusCode(200, response.ToString());
@@ -243,8 +257,10 @@ namespace LinkShorter.Controllers
             var links = new List<LinkData>();
 
             var sqlQuery =
-                @$"SELECT id, targeturl, shortpath, clickcounter, createdat, creatoruuid FROM links WHERE creatoruuid = '{userId}';";
+                @$"SELECT id, targeturl, shortpath, clickcounter, createdat, creatoruuid FROM links WHERE creatoruuid = @userId;";
             var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
+            query.Parameters.AddWithValue("userId", userId);
+            query.Prepare();
             var result = query.ExecuteReader();
 
             while (result.Read())
@@ -286,8 +302,12 @@ namespace LinkShorter.Controllers
         {
             if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
-            var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = '{shortPath}' LIMIT 1;";
+            var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = @shortPath LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
+
+            cmdCheckDuplicates.Parameters.AddWithValue("shortPath", shortPath);
+
+            cmdCheckDuplicates.Prepare();
 
             var duplicates = cmdCheckDuplicates.ExecuteScalar();
 

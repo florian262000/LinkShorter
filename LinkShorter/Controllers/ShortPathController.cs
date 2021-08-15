@@ -22,8 +22,9 @@ namespace LinkShorter.Controllers
 
             shortPath = shortPath.ToLower();
             var queryTargetUrl =
-                @$"SELECT targeturl FROM links WHERE shortPath = '{shortPath}'; UPDATE links set clickcounter = clickcounter+1  WHERE shortPath = '{shortPath}'; ";
+                @$"SELECT targeturl FROM links WHERE shortPath = @shortPath; UPDATE links set clickcounter = clickcounter+1  WHERE shortPath = @shortPath; ";
             var cmdUserId = new NpgsqlCommand(queryTargetUrl, _databaseWrapper.GetDatabaseConnection());
+            cmdUserId.Parameters.AddWithValue("shortPath", shortPath);
 
             var targetUrl = cmdUserId.ExecuteScalar()?.ToString();
 
