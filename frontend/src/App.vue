@@ -3,28 +3,22 @@
     <navbar @toggleDrawer="showDrawer = !showDrawer" />
     <navside :shouldShow="showDrawer" @updateDrawer="updateDrawer" />
     <v-main>
-      <home-login v-if="!$store.state.isLoggedIn" />
-      <home-default v-else />
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import HomeLogin from "./components/HomeLogin.vue";
-import HomeDefault from "./components/HomeDefault.vue";
-import Navbar from "./components/Navbar.vue";
+import Navbar from "@/components/Navbar.vue";
+import Navside from "@/components/Navside.vue";
 import { mapMutations } from "vuex";
 import axios from "axios";
-import Navside from "./components/Navside.vue";
 
 export default Vue.extend({
   name: "App",
-
   components: {
     Navbar,
-    HomeLogin,
-    HomeDefault,
     Navside,
   },
   data() {
@@ -67,7 +61,7 @@ export default Vue.extend({
         }
       }
     },
-    async fetchUsernameFromSession(): Promise<any> {
+    async fetchUsernameFromSession(): Promise<string> {
       const response = await axios.post("/api/login/getusername", {}, { withCredentials: true });
 
       if (response.status !== 200) {

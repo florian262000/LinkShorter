@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Npgsql;
@@ -60,9 +61,10 @@ namespace LinkShorter
             return (connection.State & ConnectionState.Open) != 0;
         }
 
-        public void reconnect()
+        public async Task reconnect()
         {
             connection = new NpgsqlConnection(sqlLogin);
+            await connection.OpenAsync();
         }
 
 

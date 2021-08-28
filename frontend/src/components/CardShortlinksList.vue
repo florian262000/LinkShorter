@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="2" height="100%">
+  <v-card elevation="2" height="100%" :loading="$store.state.loadingShortlinks">
     <v-card-title primary-title class="text-h3"> Shortlinks </v-card-title>
     <v-card-text v-if="$store.state.shortlinks.length">
       <v-list v-for="(userShortlink, index) in $store.state.shortlinks" :key="index">
@@ -16,7 +16,6 @@ import { mapActions } from "vuex";
 import ContainerLink from "./ContainerLink.vue";
 
 export default Vue.extend({
-  // eslint-disable-next-line vue/no-unused-components
   components: { ContainerLink },
   mounted() {
     this.loadShortlinks();

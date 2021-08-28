@@ -1,14 +1,6 @@
 <template>
   <v-container fill-height>
-    <v-row>
-      <v-col>
-        <h1 class="text-center text-md-h2 text-h4 truncate pa-2">
-          Good to see you, <br />
-          {{ $store.state.username }}
-        </h1>
-      </v-col>
-    </v-row>
-    <v-row justify="center" align-content="start" style="max-height: 70vh; height: 70vh">
+    <v-row justify="center" align-content="start" style="max-height: 90vh; height: 90vh">
       <v-col cols="12" md="6" style="max-height: 100%; height: 100%">
         <card-shortlinks-gernerator />
       </v-col>

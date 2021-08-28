@@ -10,6 +10,7 @@ export default new Vuex.Store({
     isLoggedIn: false,
     username: "",
     shortlinks: [] as UserShortlink[],
+    loadingShortlinks: false,
   },
   mutations: {
     setIsLoggedIn(state, value) {
@@ -23,7 +24,8 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async fetchShortlinks({ commit }) {
+    async fetchShortlinks({ commit, state }) {
+      state.loadingShortlinks = true;
       const response = await axios.get("api/link/getuserspecificlinks", { withCredentials: true });
 
       if (response.status !== 200) {
@@ -31,6 +33,7 @@ export default new Vuex.Store({
       }
 
       const data = await response.data;
+      state.loadingShortlinks = false;
       commit("setShortlinks", data);
     },
   },

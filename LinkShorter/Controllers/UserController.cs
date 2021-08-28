@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -261,6 +262,7 @@ namespace LinkShorter.Controllers
 
                 var username = result.GetString(0);
                 result.Close();
+                _databaseWrapper.GetDatabaseConnection().Close();
                 response["name"] = username;
                 return StatusCode(200, response.ToString());
             }
@@ -342,9 +344,10 @@ namespace LinkShorter.Controllers
         /// <response code="200">sends back the apikey for the user</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult GetApiKey()
+        public async Task<IActionResult> GetApiKey()
         {
-            if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
+            if (!_databaseWrapper.isConnected()) await _databaseWrapper.reconnect();
+            
 
             var response = new JObject();
 
@@ -359,13 +362,14 @@ namespace LinkShorter.Controllers
                 var sqlResult = new NpgsqlCommand(sqlQueryUserName, _databaseWrapper.GetDatabaseConnection());
                 var userIdCast = Guid.Parse(userId);
                 sqlResult.Parameters.AddWithValue("userId", userIdCast);
-                sqlResult.Prepare();
-                var result = sqlResult.ExecuteReader();
+                await sqlResult.PrepareAsync();
+                var result = await sqlResult.ExecuteReaderAsync();
 
-                result.Read();
+                await result.ReadAsync();
 
                 var username = result.GetString(0);
-                result.Close();
+                await result.CloseAsync();
+                await _databaseWrapper.GetDatabaseConnection().CloseAsync();
                 response["apikey"] = username;
                 return StatusCode(200, response.ToString());
             }
