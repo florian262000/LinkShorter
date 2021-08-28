@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Npgsql;
+using Npgsql.TypeHandlers;
+using NpgsqlTypes;
 
 namespace LinkShorter.Controllers
 {
@@ -114,9 +116,11 @@ namespace LinkShorter.Controllers
             VALUES (DEFAULT, @TargetUrl, @ShortPath, 0, DEFAULT, @userId);";
             using var cmd = new NpgsqlCommand(sql, _databaseWrapper.GetDatabaseConnection());
 
+            var userIdCast = Guid.Parse(userId);
+
             cmd.Parameters.AddWithValue("TargetUrl", linkAddApiPost.TargetUrl);
             cmd.Parameters.AddWithValue("ShortPath", linkAddApiPost.ShortPath.ToLower());
-            cmd.Parameters.AddWithValue("userId", userId);
+            cmd.Parameters.AddWithValue("userId", userIdCast);
 
             cmd.Prepare();
 
@@ -178,7 +182,8 @@ namespace LinkShorter.Controllers
             var sqlQuery =
                 @$"DELETE FROM links WHERE creatoruuid = @userId AND shortpath = @ShortPath;";
             var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
-            query.Parameters.AddWithValue("userId", userId);
+            var userIdCast = Guid.Parse(userId);
+            query.Parameters.AddWithValue("userId", userIdCast);
             query.Parameters.AddWithValue("shortpath", linkApiRemove.ShortPath);
             query.Prepare();
 
@@ -259,7 +264,8 @@ namespace LinkShorter.Controllers
             var sqlQuery =
                 @$"SELECT id, targeturl, shortpath, clickcounter, createdat, creatoruuid FROM links WHERE creatoruuid = @userId;";
             var query = new NpgsqlCommand(sqlQuery, _databaseWrapper.GetDatabaseConnection());
-            query.Parameters.AddWithValue("userId", userId);
+            var userIdCast = Guid.Parse(userId);
+            query.Parameters.AddWithValue("userId", userIdCast);
             query.Prepare();
             var result = query.ExecuteReader();
 

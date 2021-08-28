@@ -129,12 +129,13 @@ namespace LinkShorter.Controllers
             }
 
             var userId = _sessionManager.GetUserFromSessionId(sessionId);
+            var userIdCast = Guid.Parse(userId);
 
             // remove all shortlinks
             var sqlQueryLinks =
                 @$"DELETE FROM links WHERE creatoruuid = @userId;";
             var queryLinks = new NpgsqlCommand(sqlQueryLinks, _databaseWrapper.GetDatabaseConnection());
-            queryLinks.Parameters.AddWithValue("userId", userId);
+            queryLinks.Parameters.AddWithValue("userId", userIdCast);
             queryLinks.Prepare();
             queryLinks.ExecuteNonQuery();
 
@@ -143,7 +144,7 @@ namespace LinkShorter.Controllers
             var sqlQueryAccount =
                 @$"DELETE FROM users WHERE id = @userId;";
             var query = new NpgsqlCommand(sqlQueryAccount, _databaseWrapper.GetDatabaseConnection());
-            query.Parameters.AddWithValue("userId", userId);
+            query.Parameters.AddWithValue("userId", userIdCast);
             query.Prepare();
             query.ExecuteNonQuery();
 
@@ -190,7 +191,8 @@ namespace LinkShorter.Controllers
             var queryLinks = new NpgsqlCommand(sqlQueryLinks, _databaseWrapper.GetDatabaseConnection());
             queryLinks.Parameters.AddWithValue("hash", hash);
             queryLinks.Parameters.AddWithValue("salt", salt);
-            queryLinks.Parameters.AddWithValue("userId", userId);
+            var userIdCast = Guid.Parse(userId);
+            queryLinks.Parameters.AddWithValue("userId", userIdCast);
             queryLinks.Prepare();
             queryLinks.ExecuteNonQuery();
 
@@ -249,7 +251,8 @@ namespace LinkShorter.Controllers
 
                 var sqlQueryUserName = @$"SELECT username FROM users WHERE id = @userId;";
                 var sqlResult = new NpgsqlCommand(sqlQueryUserName, _databaseWrapper.GetDatabaseConnection());
-                sqlResult.Parameters.AddWithValue("userId", userId);
+                var userIdCast = Guid.Parse(userId);
+                sqlResult.Parameters.AddWithValue("userId", userIdCast);
                 sqlResult.Prepare();
 
                 var result = sqlResult.ExecuteReader();
@@ -354,7 +357,8 @@ namespace LinkShorter.Controllers
 
                 var sqlQueryUserName = @$"SELECT apikey FROM users WHERE id = @userId;";
                 var sqlResult = new NpgsqlCommand(sqlQueryUserName, _databaseWrapper.GetDatabaseConnection());
-                sqlResult.Parameters.AddWithValue("userId", userId);
+                var userIdCast = Guid.Parse(userId);
+                sqlResult.Parameters.AddWithValue("userId", userIdCast);
                 sqlResult.Prepare();
                 var result = sqlResult.ExecuteReader();
 
