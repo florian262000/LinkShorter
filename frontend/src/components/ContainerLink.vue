@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
+      <v-col cols="11">
         <a target="_blank" :href="`${$domainName}/${userShortlink.ShortPath}`">
           <h1>{{ `${$domainName}/${userShortlink.ShortPath}` }}</h1>
         </a>
