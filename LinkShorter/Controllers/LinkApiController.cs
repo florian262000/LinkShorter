@@ -20,10 +20,10 @@ namespace LinkShorter.Controllers
         private readonly StringGenerator _stringGenerator;
         private readonly SessionManager _sessionManager;
 
-        public LinkApiController(DatabaseWrapper databaseWrapper, ConfigWrapper config, StringGenerator stringGenerator,
+        public LinkApiController(ConfigWrapper config, StringGenerator stringGenerator,
             SessionManager sessionManager)
         {
-            this._databaseWrapper = databaseWrapper;
+            this._databaseWrapper = new DatabaseWrapper(config.Get());
             this._config = config;
             this._stringGenerator = stringGenerator;
             this._sessionManager = sessionManager;

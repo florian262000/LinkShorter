@@ -9,9 +9,9 @@ namespace LinkShorter.Controllers
     {
         private readonly DatabaseWrapper _databaseWrapper;
 
-        public ShortPathController(DatabaseWrapper databaseWrapper)
+        public ShortPathController(ConfigWrapper config)
         {
-            this._databaseWrapper = databaseWrapper;
+            this._databaseWrapper = new DatabaseWrapper(config.Get());
         }
 
         [HttpGet]

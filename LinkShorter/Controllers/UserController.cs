@@ -18,10 +18,10 @@ namespace LinkShorter.Controllers
         private readonly StringGenerator _stringGenerator;
         private readonly SessionManager _sessionManager;
 
-        public UserController(DatabaseWrapper databaseWrapper, PasswordManager passwordManager,
-            StringGenerator stringGenerator, SessionManager sessionManager)
+        public UserController(PasswordManager passwordManager,
+            StringGenerator stringGenerator, SessionManager sessionManager, ConfigWrapper config)
         {
-            this._databaseWrapper = databaseWrapper;
+            this._databaseWrapper = new DatabaseWrapper(config.Get());
             this._passwordManager = passwordManager;
             this._stringGenerator = stringGenerator;
             this._sessionManager = sessionManager;

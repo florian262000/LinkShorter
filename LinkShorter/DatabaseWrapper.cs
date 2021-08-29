@@ -24,7 +24,10 @@ namespace LinkShorter
             connection = new NpgsqlConnection(sqlLogin);
             connection.Open();
             // check (and create tables)
+        }
 
+        public void InitDatabase()
+        {
             var queryAddExtension = "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";";
 
             var cmd0 = new NpgsqlCommand(queryAddExtension, connection);

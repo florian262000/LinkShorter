@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -74,7 +75,6 @@ namespace LinkShorter
 
             var configWrapper = new ConfigWrapper(config);
             services.AddSingleton(configWrapper);
-            services.AddSingleton(new DatabaseWrapper(config));
             services.AddSwaggerGen();
             var stringGenerator = new StringGenerator();
 
@@ -87,7 +87,10 @@ namespace LinkShorter
                 options.AddPolicy("AllowAllOrigins",
                     builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
+
+            new DatabaseWrapper(config).InitDatabase();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -101,13 +104,12 @@ namespace LinkShorter
             else
             {
                 app.UseDefaultFiles();
-                /*app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new PhysicalFileProvider(
-                        Path.Combine(env.ContentRootPath, "frontend-serve")),
-                    RequestPath = ""
-                });*/
             }
+
+
+            var options = new RewriteOptions()
+                .AddRedirect("user", "");
+            app.UseRewriter(options);
 
 
             app.UseHttpsRedirection();
@@ -120,7 +122,6 @@ namespace LinkShorter
                     .AllowCredentials()
             );
             app.UseRouting();
-
 
             app.UseAuthorization();
 
