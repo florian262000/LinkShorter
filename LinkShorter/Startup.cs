@@ -108,7 +108,7 @@ namespace LinkShorter
 
 
             var options = new RewriteOptions()
-                .AddRedirect("user", "/");
+                .AddRedirect("/user", "/");
             app.UseRewriter(options);
 
 
