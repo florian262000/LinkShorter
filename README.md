@@ -1,6 +1,6 @@
 # LinkShorter
 
-docker-copmpose:
+docker-compose:
 ```
 version: "3.3"
 services:
