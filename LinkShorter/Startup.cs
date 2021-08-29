@@ -105,13 +105,7 @@ namespace LinkShorter
             {
                 app.UseDefaultFiles();
             }
-
-
-            var options = new RewriteOptions()
-                .AddRedirect("/user", "/");
-            app.UseRewriter(options);
-
-
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCors(
