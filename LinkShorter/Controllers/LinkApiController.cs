@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LinkShorter.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -19,11 +20,14 @@ namespace LinkShorter.Controllers
         private readonly ConfigWrapper _config;
         private readonly StringGenerator _stringGenerator;
         private readonly SessionManager _sessionManager;
+        private readonly ShortLinkGeneratorSHA1 generator;
 
         public LinkApiController(ConfigWrapper config, StringGenerator stringGenerator,
             SessionManager sessionManager)
         {
             this._databaseWrapper = new DatabaseWrapper(config.Get());
+            generator = new ShortLinkGeneratorSHA1(this.CheckIfDuplicateExists);
+            
             this._config = config;
             this._stringGenerator = stringGenerator;
             this._sessionManager = sessionManager;
@@ -100,7 +104,7 @@ namespace LinkShorter.Controllers
             //todo check for duplicates
             if (linkAddApiPost.ShortPath == null)
             {
-                linkAddApiPost.ShortPath = GenerateUniqueShortPath();
+                linkAddApiPost.ShortPath = GenerateUniqueShortPath(linkAddApiPost.TargetUrl);
             }
             else
             {
@@ -292,16 +296,9 @@ namespace LinkShorter.Controllers
         }
 
 
-        private string GenerateUniqueShortPath()
+        private string GenerateUniqueShortPath(string targetUrl)
         {
-            while (true)
-            {
-                var shortPath = _stringGenerator.GenerateRandomPath();
-
-                var duplicates = CheckIfDuplicateExists(shortPath);
-                if (duplicates) continue;
-                return shortPath;
-            }
+            return generator.GenerateUniqueShortPath(targetUrl);
         }
 
         private bool CheckIfDuplicateExists(string shortPath)
