@@ -105,7 +105,7 @@ namespace LinkShorter
             {
                 app.UseDefaultFiles();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCors(
