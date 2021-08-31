@@ -26,8 +26,8 @@ namespace LinkShorter.Controllers
             SessionManager sessionManager)
         {
             this._databaseWrapper = new DatabaseWrapper(config.Get());
-            generator = new ShortLinkGeneratorSHA1(this.CheckIfDuplicateExists);
-            
+            generator = new ShortLinkGeneratorSHA1(this.CheckIfShortPathIsAlreadyInUse);
+
             this._config = config;
             this._stringGenerator = stringGenerator;
             this._sessionManager = sessionManager;
@@ -199,6 +199,9 @@ namespace LinkShorter.Controllers
         [HttpGet]
         [Route("getuniqueshortpath")]
         /// <summary>
+        ///    requst model
+        ///
+        /// 
         ///     response model 
         ///     {
         ///        "randomShortPath": "SHORT_PATH"
@@ -207,10 +210,10 @@ namespace LinkShorter.Controllers
         /// </summary>
         /// <response code="200">short path</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetUniqueShortPath()
+        public IActionResult GetUniqueShortPath([FromBody] ShortPathGenerate shortPathGenerate)
         {
             var response = new JObject();
-            response["randomShortPath"] = GenerateUniqueShortPath();
+            response["randomShortPath"] = GenerateUniqueShortPath(shortPathGenerate.TargetUrl);
 
             return StatusCode(200, response.ToString());
         }
@@ -298,20 +301,7 @@ namespace LinkShorter.Controllers
 
         private string GenerateUniqueShortPath(string targetUrl)
         {
-<<<<<<< HEAD
-            var duplicates = true;
-            var shortPath = "";
-
-            while (duplicates)
-            {
-                shortPath = _stringGenerator.GenerateRandomPath();
-                duplicates = CheckIfShortPathIsAlreadyInUse(shortPath);
-            }
-
-            return shortPath;
-=======
             return generator.GenerateUniqueShortPath(targetUrl);
->>>>>>> 8c30bb58047e6be7241caef04ed767d2841ad736
         }
 
 
