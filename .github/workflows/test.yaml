@@ -1,9 +1,6 @@
 name: .build-and-push-to-aws
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
