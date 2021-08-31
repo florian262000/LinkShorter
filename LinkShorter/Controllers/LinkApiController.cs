@@ -200,7 +200,9 @@ namespace LinkShorter.Controllers
         [Route("getuniqueshortpath")]
         /// <summary>
         ///    requst model
-        ///
+        ///    {
+        ///        "TargetUrl": "TARGET_URL"
+        ///    }
         /// 
         ///     response model 
         ///     {
