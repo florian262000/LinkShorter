@@ -1,0 +1,32 @@
+name: .build-and-push-to-aws
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet publish -c Release
+    - uses: actions/setup-node@v2.1.4 
+    - name: build vue
+      run: |
+        export NODE_ENV=dev
+        cd frontend
+        npm install
+        npm run build
+        mkdir  ../LinkShorter/bin/Release/netcoreapp3.1/publish/wwwroot
+        mv dist/* ../LinkShorter/bin/Release/netcoreapp3.1/publish/wwwroot
