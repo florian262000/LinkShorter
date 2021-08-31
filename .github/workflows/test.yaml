@@ -1,4 +1,4 @@
-name: .build-and-push-to-aws
+name: .test
 
 on:
   pull_request:
