@@ -1,4 +1,4 @@
-name: .pipe
+name: .build-and-push-to-aws
 
 on:
   push:
