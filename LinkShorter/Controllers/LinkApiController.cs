@@ -104,7 +104,7 @@ namespace LinkShorter.Controllers
             }
             else
             {
-                if (CheckIfDuplicateExists(linkAddApiPost.ShortPath))
+                if (CheckIfShortPathIsAlreadyInUse(linkAddApiPost.ShortPath))
                 {
                     response["errorMessage"] = "shortpath already in use";
                     return StatusCode(409, response.ToString());
@@ -294,25 +294,26 @@ namespace LinkShorter.Controllers
 
         private string GenerateUniqueShortPath()
         {
-            while (true)
-            {
-                var shortPath = _stringGenerator.GenerateRandomPath();
+            var duplicates = true;
+            var shortPath = "";
 
-                var duplicates = CheckIfDuplicateExists(shortPath);
-                if (duplicates) continue;
-                return shortPath;
+            while (duplicates)
+            {
+                shortPath = _stringGenerator.GenerateRandomPath();
+                duplicates = CheckIfShortPathIsAlreadyInUse(shortPath);
             }
+
+            return shortPath;
         }
 
-        private bool CheckIfDuplicateExists(string shortPath)
+
+        private bool CheckIfShortPathIsAlreadyInUse(string shortPath)
         {
             if (!_databaseWrapper.isConnected()) _databaseWrapper.reconnect();
 
             var checkDuplicates = @$"SELECT shortpath FROM links WHERE shortpath = @shortPath LIMIT 1;";
             var cmdCheckDuplicates = new NpgsqlCommand(checkDuplicates, _databaseWrapper.GetDatabaseConnection());
-
             cmdCheckDuplicates.Parameters.AddWithValue("shortPath", shortPath);
-
             cmdCheckDuplicates.Prepare();
 
             var duplicates = cmdCheckDuplicates.ExecuteScalar();
